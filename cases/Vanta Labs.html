@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Vanta Labs · This Site — Case Study</title>
+  <meta name="description" content="A studio site built in five AI tools and one weekend — a working sketch of what AI-in-the-loop actually looks like." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="case-study.css" />
+  <style>
+    :root { --accent: #d8ff3b; --accent-ink: #d8ff3b; }
+    [data-theme="dark"] .cs-stat-v { color: var(--accent); }
+    @keyframes chain-pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+    @keyframes cursor-blink { 50% { opacity: 0; } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script type="text/babel" src="shared.jsx"></script>
+  <script type="text/babel">
+    const ACCENT = '#d8ff3b';
+    const { useState, useEffect, useRef } = React;
+
+    function ChainNode({ label, active, accent, sub }) {
+      return (
+        <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:5 }}>
+          <div style={{
+            padding:'7px 11px',
+            borderRadius:8,
+            border:`1px solid ${active ? accent : 'rgba(255,255,255,0.1)'}`,
+            background: active ? `rgba(216,255,59,0.1)` : 'rgba(0,0,0,0.4)',
+            color: active ? accent : 'rgba(255,255,255,0.55)',
+            fontFamily:'var(--font-mono)',
+            fontSize:10,
+            letterSpacing:'0.1em',
+            backdropFilter:'blur(8px)',
+            WebkitBackdropFilter:'blur(8px)',
+            boxShadow: active ? `0 0 20px rgba(216,255,59,0.15)` : 'none',
+            transition:'all .4s',
+            whiteSpace:'nowrap',
+          }}>{label}</div>
+          {sub && <div style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'rgba(255,255,255,0.25)', letterSpacing:'0.06em', textTransform:'uppercase' }}>{sub}</div>}
+        </div>
+      );
+    }
+
+    function HeroArt() {
+      const tools = [
+        { label:'IDEA', sub:'seed' },
+        { label:'GPT', sub:'explore' },
+        { label:'CODEX', sub:'structure' },
+        { label:'STITCH', sub:'refine' },
+        { label:'CLAUDE', sub:'polish' },
+        { label:'LIVE', sub:'ship' },
+      ];
+      const [active, setActive] = useState(0);
+      useEffect(() => {
+        const id = setInterval(() => setActive(a => (a + 1) % tools.length), 900);
+        return () => clearInterval(id);
+      }, []);
+
+      return (
+        <div style={{ position:'absolute', inset:0, background:`radial-gradient(100% 70% at 70% 30%, rgba(216,255,59,0.14), transparent 55%), linear-gradient(160deg, #0a0908, #15120f)`, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:24, gap:22 }}>
+          <div className="art-grid-overlay" />
+
+          <div style={{ position:'absolute', top:18, left:18, display:'flex', alignItems:'center', gap:7, fontFamily:'var(--font-mono)', fontSize:10, letterSpacing:'0.08em', color:ACCENT }}>
+            <span style={{ width:6, height:6, borderRadius:'50%', background:ACCENT, boxShadow:`0 0 8px ${ACCENT}`, display:'inline-block' }} />
+            MADE WITH AI · KEPT BY HAND
+          </div>
+
+          <div style={{ position:'absolute', top:18, right:18, fontFamily:'var(--font-mono)', fontSize:10, color:'rgba(255,255,255,0.35)', letterSpacing:'0.06em' }}>~36h total</div>
+
+          <div style={{ display:'flex', alignItems:'center', gap:0, flexWrap:'nowrap', width:'100%', justifyContent:'center' }}>
+            {tools.map((t, i) => (
+              <React.Fragment key={t.label}>
+                <ChainNode label={t.label} sub={t.sub} active={i <= active} accent={ACCENT} />
+                {i < tools.length - 1 && (
+                  <div style={{
+                    height:1,
+                    width:18,
+                    flexShrink:0,
+                    background: i < active
+                      ? `linear-gradient(to right, ${ACCENT}, ${ACCENT})`
+                      : 'linear-gradient(to right, rgba(255,255,255,0.2), rgba(255,255,255,0.05))',
+                    transition:'background .4s',
+                  }} />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+
+          <div style={{ width:'90%', background:'rgba(0,0,0,0.5)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:8, overflow:'hidden', backdropFilter:'blur(8px)', WebkitBackdropFilter:'blur(8px)' }}>
+            <div style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 12px', borderBottom:'1px solid rgba(255,255,255,0.06)', background:'rgba(255,255,255,0.02)' }}>
+              {['rgba(255,95,87,0.7)','rgba(254,188,46,0.7)','rgba(40,200,64,0.7)'].map(c => (
+                <span key={c} style={{ width:8, height:8, borderRadius:'50%', background:c }} />
+              ))}
+              <span style={{ marginLeft:'auto', fontFamily:'var(--font-mono)', fontSize:9, color:'rgba(255,255,255,0.3)' }}>~/vanta · ship.log</span>
+            </div>
+            <div style={{ padding:'10px 14px', fontFamily:'var(--font-mono)', fontSize:11, lineHeight:1.9 }}>
+              {[
+                { t:'init', s:'vanta init "studio site"', c:'rgba(255,255,255,0.85)' },
+                { t:'01', s:'◇ concept · chatgpt → brief', c:'rgba(185,200,164,0.85)' },
+                { t:'02', s:'◇ structure · codex → components', c:'rgba(185,200,164,0.85)' },
+                { t:'03', s:'◇ refine · stitch → design system', c:'rgba(185,200,164,0.85)' },
+                { t:'04', s:'◇ polish · claude → production', c:'rgba(185,200,164,0.85)' },
+                { t:'05', s:'◆ shipped in ~36 hours', c:ACCENT },
+              ].slice(0, Math.max(1, active + 1)).map((l, i) => (
+                <div key={i} style={{ display:'flex', gap:12 }}>
+                  <span style={{ color:'rgba(255,255,255,0.3)', width:30, flexShrink:0 }}>{l.t}</span>
+                  <span style={{ color:l.c }}>{l.s}</span>
+                </div>
+              ))}
+              {active < 5 && <span style={{ display:'inline-block', width:7, height:13, background:ACCENT, verticalAlign:'-2px', marginLeft:46, animation:'cursor-blink 1s steps(2) infinite' }} />}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    function ShowcaseArt() {
+      return (
+        <div style={{ position:'absolute', inset:0, background:`radial-gradient(80% 60% at 80% 20%, rgba(216,255,59,0.12), transparent 55%), linear-gradient(160deg, #050403, #0f0d0c)`, overflow:'hidden' }}>
+          <div className="art-grid-overlay" />
+          <div style={{ position:'absolute', top:0, left:0, right:0, height:36, background:'rgba(0,0,0,0.6)', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', padding:'0 14px', gap:8 }}>
+            {['#ff5f57','#febc2e','#28c840'].map(c => <span key={c} style={{ width:9, height:9, borderRadius:'50%', background:c, opacity:0.7 }} />)}
+            <div style={{ flex:1, margin:'0 10px', height:20, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:4, display:'flex', alignItems:'center', paddingLeft:8 }}>
+              <span style={{ fontFamily:'var(--font-mono)', fontSize:8.5, color:'rgba(255,255,255,0.3)', letterSpacing:'0.04em' }}>vantalabs.co</span>
+            </div>
+          </div>
+          <div style={{ position:'absolute', top:36, left:0, right:0, height:34, background:'rgba(10,9,8,0.9)', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', padding:'0 20px', gap:22 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:7 }}>
+              <div style={{ width:14, height:14, borderRadius:4, background:'rgba(216,255,59,0.3)', border:'1px solid rgba(216,255,59,0.3)' }} />
+              <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:'rgba(255,255,255,0.8)', fontWeight:500, letterSpacing:'0.04em' }}>Vanta/Labs</span>
+            </div>
+            {['WORK','SERVICES','PROCESS','THINKING'].map(t => (
+              <span key={t} style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'rgba(255,255,255,0.3)', letterSpacing:'0.06em' }}>{t}</span>
+            ))}
+            <div style={{ marginLeft:'auto', padding:'4px 10px', borderRadius:999, background:ACCENT, fontFamily:'var(--font-mono)', fontSize:8, color:'#0a0908', fontWeight:700, letterSpacing:'0.06em' }}>START A PROJECT</div>
+          </div>
+          <div style={{ position:'absolute', top:70, left:22, right:22, bottom:14, display:'grid', gridTemplateColumns:'1fr 0.8fr', gap:16, alignItems:'center' }}>
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:4 }}>
+                <div style={{ width:5, height:5, borderRadius:'50%', background:ACCENT }} />
+                <div style={{ height:4, width:100, background:'rgba(255,255,255,0.2)', borderRadius:2 }} />
+              </div>
+              <div style={{ height:8, width:'80%', background:'rgba(255,255,255,0.7)', borderRadius:2 }} />
+              <div style={{ height:8, width:'65%', background:'rgba(255,255,255,0.7)', borderRadius:2 }} />
+              <div style={{ height:8, width:'45%', background:'rgba(255,255,255,0.5)', borderRadius:2 }} />
+              <div style={{ height:4, width:'85%', background:'rgba(255,255,255,0.2)', borderRadius:2, marginTop:4 }} />
+              <div style={{ height:4, width:'70%', background:'rgba(255,255,255,0.2)', borderRadius:2 }} />
+              <div style={{ display:'flex', gap:8, marginTop:8 }}>
+                <div style={{ padding:'6px 12px', background:ACCENT, borderRadius:999, fontFamily:'var(--font-mono)', fontSize:8, color:'#0a0908', fontWeight:700, letterSpacing:'0.06em' }}>START A PROJECT</div>
+                <div style={{ padding:'6px 12px', border:'1px solid rgba(255,255,255,0.15)', borderRadius:999, fontFamily:'var(--font-mono)', fontSize:8, color:'rgba(255,255,255,0.4)', letterSpacing:'0.06em' }}>SEE WORK</div>
+              </div>
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:8, marginTop:10, paddingTop:10, borderTop:'1px solid rgba(255,255,255,0.08)' }}>
+                {[['18d','ship time'],['42','clients'],['~36h','this site']].map(([v,l]) => (
+                  <div key={l}>
+                    <div style={{ fontSize:12, fontWeight:600, color:'#fff', letterSpacing:'-0.02em' }}>{v}</div>
+                    <div style={{ fontFamily:'var(--font-mono)', fontSize:7, color:'rgba(255,255,255,0.3)', letterSpacing:'0.06em', textTransform:'uppercase', marginTop:2 }}>{l}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{ aspectRatio:'1/1', background:'radial-gradient(circle at 50% 50%, rgba(216,255,59,0.18), #050403 70%)', borderRadius:10, border:'1px solid rgba(255,255,255,0.08)', display:'grid', placeItems:'center', position:'relative', overflow:'hidden' }}>
+              <div style={{ position:'absolute', inset:0, backgroundImage:'linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize:'18px 18px' }} />
+              <div style={{ width:14, height:14, borderRadius:'50%', background:ACCENT, boxShadow:`0 0 20px ${ACCENT}` }} />
+              {[38,60,82].map((r, i) => (
+                <div key={i} style={{ position:'absolute', width:`${r}%`, height:`${r}%`, borderRadius:'50%', border:'1px dashed rgba(255,255,255,0.1)' }} />
+              ))}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const NEXT = { name: 'Aucor Property', cat: 'Property auctions · Brand & web', href: 'Aucor Property.html' };
+
+    function Page() {
+      useEffect(() => {
+        document.documentElement.style.setProperty('--accent', ACCENT);
+      }, []);
+      return (
+        <>
+          <CaseNav accent={ACCENT} />
+          <main>
+            <section className="cs-hero">
+              <div className="container">
+                <Reveal>
+                  <a href="../index.html#work" className="cs-back">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M9 11L5 7l4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    All work
+                  </a>
+                </Reveal>
+                <Reveal delay={40}>
+                  <div className="cs-chips">
+                    <span className="cs-chip"><span className="cs-chip-dot" style={{ background:ACCENT, color:ACCENT }} />In-house</span>
+                    <span className="cs-chip">2026</span>
+                    <span className="cs-chip">Brand & Web</span>
+                    <span className="cs-chip" style={{ borderColor:`${ACCENT}50`, color:ACCENT }}>Live · v1</span>
+                  </div>
+                </Reveal>
+                <div className="cs-hero-grid">
+                  <div>
+                    <Reveal delay={80}>
+                      <h1 className="display">
+                        A studio site, built in <span className="display-em">five tools and one weekend.</span>
+                      </h1>
+                    </Reveal>
+                    <Reveal delay={160}>
+                      <p className="lede">
+                        This site. The one you're reading. Built in ~36 hours, across five AI
+                        tools, as a deliberate proof of concept: that the way we work — AI in
+                        the loop, taste at the wheel — is real, repeatable, and fast enough to
+                        make it a genuine competitive advantage.
+                      </p>
+                    </Reveal>
+                    <Reveal delay={220}>
+                      <div className="cs-services">
+                        {['Strategy','Brand','Web','AI workflow'].map(s => (
+                          <span key={s} className="tag">{s}</span>
+                        ))}
+                      </div>
+                    </Reveal>
+                  </div>
+                  <Reveal delay={120} className="cs-hero-art">
+                    <HeroArt />
+                  </Reveal>
+                </div>
+              </div>
+            </section>
+
+            <section className="cs-section">
+              <div className="container">
+                <Eyebrow num="01">The brief</Eyebrow>
+                <div className="cs-2col">
+                  <div>
+                    <Reveal>
+                      <h2 className="h2">If we preach speed, we have to prove it on ourselves first.</h2>
+                    </Reveal>
+                    <ol className="cs-steps">
+                      {[
+                        { t: 'The constraint', b: 'We couldn\'t spend three months crafting a site while telling clients we deliver in weeks. The studio site needed to be a working demonstration of the process — not a finished-by-committee portfolio.' },
+                        { t: 'The meta-problem', b: 'How do you build something that feels genuinely considered, not obviously AI-generated? How do you use five tools without producing the averaged-out slop of five tools?' },
+                        { t: 'The answer', b: 'You treat AI as a collaborator with no taste and a lot of knowledge. It handles speed and surface area. You handle every decision that actually matters.' },
+                      ].map((s, i) => (
+                        <Reveal key={i} delay={i * 70} as="li" className="cs-step">
+                          <span className="cs-step-n mono">0{i + 1}</span>
+                          <div>
+                            <h3 className="cs-step-t">{s.t}</h3>
+                            <p className="cs-step-b">{s.b}</p>
+                          </div>
+                        </Reveal>
+                      ))}
+                    </ol>
+                  </div>
+                  <Reveal delay={120}>
+                    <p className="lede">
+                      Vanta Labs started as a half-formed idea in a ChatGPT thread on a Friday
+                      evening. By Sunday night it was live. Not in a "throw it over the wall"
+                      sense — it had real copy, a real visual system, working interactions, and
+                      a positioning we'd stand behind in front of a client.
+                    </p>
+                    <p className="lede" style={{ marginTop: 16 }}>
+                      The site is also the most honest possible answer to the question every
+                      potential client asks first: "Can you build something that looks like it
+                      took months, in days?" Yes. This is what that looks like.
+                    </p>
+                    <div style={{ marginTop: 32, padding: '24px 26px', background: 'var(--bg-2)', border: '1px solid var(--line)', borderLeft: `3px solid ${ACCENT}`, borderRadius: '0 8px 8px 0' }}>
+                      <p style={{ margin: 0, fontSize: 15, fontStyle: 'italic', fontFamily: "'Instrument Serif', serif", color: 'var(--fg-2)', lineHeight: 1.6 }}>
+                        "The site is meta, on purpose. It's built exactly the way we'd build yours —
+                        and it's the proof that we're not overselling the process."
+                      </p>
+                      <div className="mono dim" style={{ marginTop: 10, fontSize: 11 }}>— Internal brief, Apr 2026</div>
+                    </div>
+                  </Reveal>
+                </div>
+              </div>
+            </section>
+
+            <section className="cs-section">
+              <div className="container">
+                <div className="cs-section-head">
+                  <Eyebrow num="02">How we built it</Eyebrow>
+                  <Reveal>
+                    <h2 className="h2">Five tools. One loop. Every decision still deliberate.</h2>
+                  </Reveal>
+                </div>
+                <Reveal>
+                  <div className="cs-visual-wrap">
+                    <ShowcaseArt />
+                  </div>
+                </Reveal>
+                <div className="cs-approach-grid">
+                  {[
+                    { n: '01', t: 'Concept & positioning', b: 'Started in ChatGPT — explored positioning, tone, the studio\'s actual value proposition. Not a brief by committee. A brief by interrogation: what do we actually believe, and can we say it plainly?' },
+                    { n: '02', t: 'Structure & components', b: 'Moved to Codex and then Stitch to scaffold the React component architecture, the design tokens, the type system, the layout logic. AI handles the boilerplate fast; the decisions still had to be ours.' },
+                    { n: '03', t: 'Polish & production', b: 'Final pass in Claude — interactions, copy refinement, animation, the details that add up to a site that feels considered. Then a couple of hours of real-human craft before pushing live.' },
+                  ].map((a, i) => (
+                    <Reveal key={i} delay={i * 80} className="cs-approach-item">
+                      <div className="cs-approach-n">{a.n}</div>
+                      <h3 className="cs-approach-t">{a.t}</h3>
+                      <p className="cs-approach-b">{a.b}</p>
+                    </Reveal>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="cs-section">
+              <div className="container">
+                <Eyebrow num="03">Outcomes</Eyebrow>
+                <Reveal>
+                  <h2 className="h2">Proof of process,<br />shipped as the process itself.</h2>
+                </Reveal>
+                <div className="cs-stats">
+                  {[
+                    { v: '5', l: 'AI tools in the loop — each doing what it does best' },
+                    { v: '~36h', l: 'From a half-formed idea to a live, production site' },
+                    { v: 'v1', l: 'Live. Growing. The foundation for everything that follows' },
+                  ].map((s, i) => (
+                    <Reveal key={i} delay={i * 80} className="cs-stat">
+                      <div className="cs-stat-v">{s.v}</div>
+                      <div className="cs-stat-l">{s.l}</div>
+                    </Reveal>
+                  ))}
+                </div>
+                <Reveal delay={120}>
+                  <p className="cs-closing">
+                    The site you're reading is version one. It already books calls, communicates
+                    the studio's positioning, and demonstrates the aesthetic standard we hold
+                    ourselves to. Every future iteration will be made the same way — quickly,
+                    deliberately, with AI as a tool and taste as the filter.
+                  </p>
+                </Reveal>
+              </div>
+            </section>
+
+            <div className="cs-next">
+              <div className="container">
+                <div className="cs-next-inner">
+                  <div>
+                    <div className="mono dim cs-next-label">Next project</div>
+                    <div className="cs-next-name">{NEXT.name}</div>
+                    <div className="cs-next-cat mono dim">{NEXT.cat}</div>
+                  </div>
+                  <a href={NEXT.href} className="btn btn--accent btn--lg" style={{ ['--accent']: ACCENT }}>
+                    View case study
+                    <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
+                      <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </main>
+          <CaseFooter accent={ACCENT} />
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<Page />);
+  </script>
+</body>
+</html>

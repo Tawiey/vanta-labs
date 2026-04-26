@@ -1,0 +1,311 @@
+/* ── Case Study pages — additional styles ── */
+
+/* ─── Hero ─── */
+.cs-hero {
+  padding: clamp(140px, 15vw, 200px) 0 clamp(70px, 8vw, 110px);
+  position: relative;
+  z-index: 1;
+}
+
+.cs-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  margin-bottom: 40px;
+  transition: color .2s;
+}
+.cs-back:hover { color: var(--fg); }
+.cs-back svg { opacity: 0.6; }
+
+.cs-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.cs-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: var(--bg-2);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+
+.cs-chip-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.cs-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(40px, 6vw, 90px);
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .cs-hero-grid { grid-template-columns: 1fr; }
+}
+
+.cs-hero-art {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background: var(--bg-2);
+  isolation: isolate;
+}
+
+.cs-services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 24px;
+}
+
+/* ─── Sections ─── */
+.cs-section {
+  padding: clamp(80px, 10vw, 130px) 0;
+  border-top: 1px solid var(--line);
+  position: relative;
+  z-index: 1;
+}
+
+.cs-section-head {
+  margin-bottom: clamp(44px, 6vw, 70px);
+}
+
+.cs-2col {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  gap: clamp(40px, 6vw, 100px);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .cs-2col { grid-template-columns: 1fr; }
+}
+
+/* ─── Numbered steps (brief section) ─── */
+.cs-steps {
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+}
+
+.cs-step {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.cs-step:last-child {
+  border-bottom: none;
+}
+
+.cs-step-n {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  background: var(--bg-2);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-3);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.cs-step-t {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  margin: 0 0 5px;
+}
+
+.cs-step-b {
+  font-size: 14.5px;
+  color: var(--fg-2);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ─── Showcase visual ─── */
+.cs-visual-wrap {
+  position: relative;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  aspect-ratio: 16 / 8;
+  background: var(--bg-2);
+  margin-bottom: 32px;
+  isolation: isolate;
+}
+
+/* ─── Approach grid (3 columns) ─── */
+.cs-approach-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+@media (max-width: 720px) {
+  .cs-approach-grid { grid-template-columns: 1fr; }
+}
+
+.cs-approach-item {
+  background: var(--bg);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.cs-approach-n {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.cs-approach-t {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  margin: 0 0 10px;
+}
+
+.cs-approach-b {
+  font-size: 14px;
+  color: var(--fg-2);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ─── Stats (outcomes section) ─── */
+.cs-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 40px 0 44px;
+}
+
+@media (max-width: 660px) {
+  .cs-stats { grid-template-columns: 1fr; }
+}
+
+.cs-stat {
+  background: var(--bg);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cs-stat-v {
+  font-size: clamp(36px, 4vw, 54px);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.cs-stat-l {
+  font-size: 14px;
+  color: var(--fg-2);
+  line-height: 1.4;
+  max-width: 24ch;
+}
+
+.cs-closing {
+  font-size: clamp(16px, 1.6vw, 20px);
+  line-height: 1.6;
+  color: var(--fg-2);
+  max-width: 62ch;
+}
+
+/* ─── Next case CTA ─── */
+.cs-next {
+  border-top: 1px solid var(--line);
+  padding: 60px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.cs-next-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.cs-next-label {
+  margin-bottom: 10px;
+}
+
+.cs-next-name {
+  font-size: clamp(22px, 3vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.cs-next-cat {
+  margin-top: 6px;
+  color: var(--fg-3);
+  font-size: 13px;
+}
+
+/* ─── Art shared helpers ─── */
+.art-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 80%);
+  pointer-events: none;
+}
+
+.art-dot-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.14) 1px, transparent 1px);
+  background-size: 8px 8px;
+  mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 0%, transparent 70%);
+  opacity: 0.6;
+  pointer-events: none;
+}
