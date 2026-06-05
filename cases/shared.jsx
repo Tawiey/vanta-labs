@@ -63,6 +63,32 @@ function Tilt({ children, max = 5, className, style }) {
   );
 }
 
+// ── DeviceShot ──────────────────────────────────────────────────────────────
+// Real screenshot in a browser frame with a phone mockup overlapping the
+// bottom-right corner. Styles (.shot*) live in ../styles.css.
+function DeviceShot({ desktop, mobile, url, bg1 = '#0a0a0c', bg2 = '#15151a' }) {
+  return (
+    <div className="shot" style={{ background: `linear-gradient(160deg, ${bg1}, ${bg2})` }}>
+      <div className="shot-browser">
+        <div className="shot-bar">
+          {['#ff5f57', '#febc2e', '#28c840'].map((c) => (
+            <span key={c} className="shot-dot" style={{ background: c }} />
+          ))}
+          {url && <span className="shot-url">{url}</span>}
+        </div>
+        <div className="shot-screen">
+          <img src={desktop} alt="" loading="lazy" />
+        </div>
+      </div>
+      {mobile && (
+        <div className="shot-phone">
+          <img src={mobile} alt="" loading="lazy" />
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Eyebrow ───────────────────────────────────────────────────────────────
 function Eyebrow({ children, num }) {
   return (
@@ -180,4 +206,4 @@ function CaseFooter({ accent }) {
   );
 }
 
-Object.assign(window, { Reveal, Tilt, Eyebrow, CaseNav, CaseFooter });
+Object.assign(window, { Reveal, Tilt, Eyebrow, CaseNav, CaseFooter, DeviceShot });

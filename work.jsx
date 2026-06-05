@@ -23,6 +23,11 @@ const CASE_STUDIES = [
     palette: ['#0a0a0c', '#15151a', '#e6483b'],
     accent: '#e6483b',
     art: 'auction',
+    media: {
+      desktop: 'assets/work/aucor-desktop.jpg',
+      mobile: 'assets/work/aucor-mobile.png',
+      url: 'aucor-property.co.za',
+    },
   },
   {
     slug: 'scis-wits',
@@ -41,6 +46,11 @@ const CASE_STUDIES = [
     palette: ['#08111e', '#0e1a30', '#9ee84d'],
     accent: '#9ee84d',
     art: 'globe',
+    media: {
+      desktop: 'assets/work/scis-desktop-light.jpg',
+      mobile: 'assets/work/scis-mobile.png',
+      url: 'wits-scis.vercel.app',
+    },
   },
   {
     slug: 'vanta-labs',
@@ -106,10 +116,46 @@ const CASE_STUDIES = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────
-// Card art — abstract previews built from the case study's palette
+// Device composite — real screenshot in a browser frame + phone in the corner
+// (markup mirrors the DeviceShot in cases/shared.jsx; styles live in styles.css)
 // ─────────────────────────────────────────────────────────────────────────
-function CaseArt({ kind, palette, accent }) {
+function ShotComposite({ media, palette }) {
+  const [bg1, bg2] = palette;
+  return (
+    <div className="shot" style={{ background: `linear-gradient(160deg, ${bg1}, ${bg2})` }}>
+      <div className="shot-browser">
+        <div className="shot-bar">
+          {['#ff5f57', '#febc2e', '#28c840'].map((c) => (
+            <span key={c} className="shot-dot" style={{ background: c }} />
+          ))}
+          <span className="shot-url">{media.url}</span>
+        </div>
+        <div className="shot-screen">
+          <img src={media.desktop} alt="" loading="lazy" />
+        </div>
+      </div>
+      {media.mobile && (
+        <div className="shot-phone">
+          <img src={media.mobile} alt="" loading="lazy" />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Card art — real screenshots when a case has `media`, else abstract previews
+// built from the case study's palette
+// ─────────────────────────────────────────────────────────────────────────
+function CaseArt({ kind, palette, accent, media }) {
   const [bg1, bg2, c3] = palette;
+  if (media) {
+    return (
+      <div className="case-art">
+        <ShotComposite media={media} palette={palette} />
+      </div>
+    );
+  }
   if (kind === 'auction') {
     // Aucor — countdown tiles + price line, in their dark navy/red
     return (
@@ -223,7 +269,7 @@ function CaseArt({ kind, palette, accent }) {
 function CaseHeroCard({ c, span }) {
   const inner = (
     <div className="case-card-inner">
-      <CaseArt kind={c.art} palette={c.palette} accent={c.accent} />
+      <CaseArt kind={c.art} palette={c.palette} accent={c.accent} media={c.media} />
       <div className="case-card-foot">
         <div className="case-card-l">
           <div className="mono dim case-card-kind">{c.kind} · {c.year}</div>

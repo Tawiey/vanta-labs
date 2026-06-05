@@ -13,11 +13,6 @@
   <style>
     :root { --accent: #9ee84d; --accent-ink: #9ee84d; }
     [data-theme="dark"] .cs-stat-v { color: var(--accent); }
-    @keyframes ca-rotate { to { transform: rotate(360deg); } }
-    @keyframes globe-pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(158,232,77,0.4); }
-      50% { box-shadow: 0 0 0 6px rgba(158,232,77,0); }
-    }
   </style>
 </head>
 <body>
@@ -29,137 +24,6 @@
   <script type="text/babel">
     const ACCENT = '#9ee84d';
     const { useState, useEffect, useRef } = React;
-
-    function Globe({ size = 200, accent }) {
-      const pins = [
-        { top: '38%', left: '52%', color: accent },
-        { top: '56%', left: '50%', color: accent },
-        { top: '44%', left: '36%', color: '#5db8ff' },
-        { top: '30%', left: '62%', color: '#5db8ff' },
-        { top: '50%', left: '72%', color: '#5db8ff' },
-        { top: '62%', left: '40%', color: '#ff9f5b' },
-        { top: '35%', left: '45%', color: '#ff9f5b' },
-        { top: '48%', left: '28%', color: '#5db8ff' },
-        { top: '58%', left: '64%', color: accent },
-      ];
-      return (
-        <div style={{ position:'relative', width:size, height:size }}>
-          <div style={{ position:'absolute', inset:-10, borderRadius:'50%', border:'1px dashed rgba(255,255,255,0.08)', animation:'ca-rotate 60s linear infinite' }} />
-          <div style={{ position:'absolute', inset:0, borderRadius:'50%', background:'radial-gradient(circle at 32% 28%, rgba(255,255,255,0.07), transparent 55%), radial-gradient(circle at center, #0e1a30 0%, #06101e 90%)', border:'1px solid rgba(255,255,255,0.15)', boxShadow:'inset 0 0 60px rgba(0,0,0,0.5), 0 0 40px rgba(158,232,77,0.06)' }} />
-          <svg style={{ position:'absolute', inset:0, width:'100%', height:'100%', opacity:0.12 }} viewBox="0 0 100 100">
-            <ellipse cx="50" cy="50" rx="20" ry="49" fill="none" stroke="white" strokeWidth="0.5" />
-            <ellipse cx="50" cy="50" rx="40" ry="49" fill="none" stroke="white" strokeWidth="0.5" />
-            <line x1="1" y1="50" x2="99" y2="50" stroke="white" strokeWidth="0.5" />
-            <ellipse cx="50" cy="50" rx="49" ry="18" fill="none" stroke="white" strokeWidth="0.5" />
-          </svg>
-          {pins.map((p, i) => (
-            <div key={i} style={{ position:'absolute', top:p.top, left:p.left, width:7, height:7, borderRadius:'50%', background:p.color, transform:'translate(-50%,-50%)', boxShadow:`0 0 0 3px rgba(0,0,0,0.6), 0 0 10px ${p.color}`, animation:`globe-pulse ${1.5 + i * 0.3}s ease-out infinite` }} />
-          ))}
-        </div>
-      );
-    }
-
-    function HeroArt() {
-      const streams = ['Budgets','Wealth','Work','Care','Climate'];
-      const [active, setActive] = useState(0);
-      useEffect(() => {
-        const id = setInterval(() => setActive(a => (a + 1) % streams.length), 2200);
-        return () => clearInterval(id);
-      }, []);
-      return (
-        <div style={{ position:'absolute', inset:0, background:`radial-gradient(100% 70% at 50% 100%, rgba(158,232,77,0.12), transparent 55%), linear-gradient(200deg, #08111e, #0e1a30)`, display:'flex', flexDirection:'column', justifyContent:'center', padding:28, gap:20 }}>
-          <div className="art-dot-overlay" />
-          <div style={{ position:'absolute', top:18, left:18, display:'flex', alignItems:'center', gap:7, fontFamily:'var(--font-mono)', fontSize:10, letterSpacing:'0.08em', color:ACCENT }}>
-            <span style={{ width:6, height:6, borderRadius:'50%', background:ACCENT, boxShadow:`0 0 8px ${ACCENT}`, display:'inline-block' }} />
-            SCIS · WITS UNIVERSITY
-          </div>
-          <div style={{ background:'rgba(0,0,0,0.35)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:10, overflow:'hidden', backdropFilter:'blur(8px)', WebkitBackdropFilter:'blur(8px)' }}>
-            <div style={{ display:'flex', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
-              {streams.map((s, i) => (
-                <div key={s} onClick={() => setActive(i)} style={{ flex:1, padding:'9px 4px', textAlign:'center', fontFamily:'var(--font-mono)', fontSize:8.5, letterSpacing:'0.06em', textTransform:'uppercase', color: active===i ? ACCENT : 'rgba(255,255,255,0.35)', borderBottom: active===i ? `2px solid ${ACCENT}` : '2px solid transparent', cursor:'pointer', transition:'color .3s', userSelect:'none' }}>{s}</div>
-              ))}
-            </div>
-            <div style={{ padding:'14px 16px 16px', minHeight:70 }}>
-              <div style={{ fontFamily:'var(--font-mono)', fontSize:9.5, color:'rgba(255,255,255,0.35)', letterSpacing:'0.06em', marginBottom:8, textTransform:'uppercase' }}>Active programme</div>
-              <div style={{ fontSize:13, fontWeight:500, color:'#fff', marginBottom:6 }}>
-                {['Public Economy','Wealth & Ownership','Labour Markets','Care Economy','Climate Justice'][active]} Programme
-              </div>
-              <div style={{ display:'flex', gap:4, alignItems:'flex-end', height:28, marginTop:8 }}>
-                {[40,65,55,80,45,90,70].map((h,i) => (
-                  <div key={i} style={{ flex:1, height:`${h}%`, borderRadius:2, background: i===5 ? ACCENT : 'rgba(255,255,255,0.15)', transition:'background .3s' }} />
-                ))}
-              </div>
-            </div>
-          </div>
-          <div style={{ display:'flex', alignItems:'center', gap:18 }}>
-            <Globe size={120} accent={ACCENT} />
-            <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-              {[['9','Partner countries'],['14','Academic institutions'],['7y','Of research output']].map(([v,l]) => (
-                <div key={l}>
-                  <div style={{ fontSize:18, fontWeight:600, color:ACCENT, letterSpacing:'-0.02em', lineHeight:1 }}>{v}</div>
-                  <div style={{ fontFamily:'var(--font-mono)', fontSize:8.5, color:'rgba(255,255,255,0.4)', letterSpacing:'0.06em', textTransform:'uppercase', marginTop:2 }}>{l}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    function ShowcaseArt() {
-      const streams = ['Budgets','Wealth','Work','Care','Climate'];
-      const [tab, setTab] = useState(0);
-      useEffect(() => {
-        const id = setInterval(() => setTab(t => (t + 1) % streams.length), 1800);
-        return () => clearInterval(id);
-      }, []);
-      return (
-        <div style={{ position:'absolute', inset:0, background:`radial-gradient(80% 60% at 20% 80%, rgba(158,232,77,0.12), transparent 50%), linear-gradient(160deg, #08111e, #0e1a30)`, overflow:'hidden' }}>
-          <div className="art-dot-overlay" />
-          <div style={{ position:'absolute', top:0, left:0, right:0, height:36, background:'rgba(0,0,0,0.5)', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', padding:'0 14px', gap:8 }}>
-            {['#ff5f57','#febc2e','#28c840'].map(c => <span key={c} style={{ width:9, height:9, borderRadius:'50%', background:c, opacity:0.7 }} />)}
-            <div style={{ flex:1, margin:'0 10px', height:20, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:4, display:'flex', alignItems:'center', paddingLeft:8 }}>
-              <span style={{ fontFamily:'var(--font-mono)', fontSize:8.5, color:'rgba(255,255,255,0.3)', letterSpacing:'0.04em' }}>wits-scis.vercel.app</span>
-            </div>
-          </div>
-          <div style={{ position:'absolute', top:36, left:0, right:0, height:34, background:'rgba(8,17,30,0.9)', borderBottom:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center', padding:'0 20px', gap:20 }}>
-            <span style={{ fontFamily:'var(--font-mono)', fontSize:9, color:ACCENT, fontWeight:600, letterSpacing:'0.06em' }}>SCIS</span>
-            {['RESEARCH','APPROACH','IMPACT','NEWS','STUDY'].map(t => (
-              <span key={t} style={{ fontFamily:'var(--font-mono)', fontSize:8, color:'rgba(255,255,255,0.35)', letterSpacing:'0.06em' }}>{t}</span>
-            ))}
-          </div>
-          <div style={{ position:'absolute', top:70, left:20, right:'45%', bottom:0, display:'flex', flexDirection:'column', justifyContent:'center', paddingBottom:20, gap:10 }}>
-            <div style={{ height:5, width:'40%', background:'rgba(255,255,255,0.6)', borderRadius:2 }} />
-            <div style={{ height:5, width:'65%', background:'rgba(255,255,255,0.6)', borderRadius:2 }} />
-            <div style={{ height:4, width:'80%', background:'rgba(255,255,255,0.2)', borderRadius:2, marginTop:4 }} />
-            <div style={{ height:4, width:'70%', background:'rgba(255,255,255,0.2)', borderRadius:2 }} />
-            <div style={{ height:4, width:'55%', background:'rgba(255,255,255,0.2)', borderRadius:2 }} />
-            <div style={{ display:'flex', gap:8, marginTop:6 }}>
-              <div style={{ padding:'6px 12px', background:ACCENT, borderRadius:999, fontFamily:'var(--font-mono)', fontSize:8, color:'#08111e', fontWeight:700, letterSpacing:'0.06em' }}>EXPLORE RESEARCH</div>
-              <div style={{ padding:'6px 12px', border:'1px solid rgba(255,255,255,0.2)', borderRadius:999, fontFamily:'var(--font-mono)', fontSize:8, color:'rgba(255,255,255,0.5)', letterSpacing:'0.06em' }}>SUBSCRIBE</div>
-            </div>
-          </div>
-          <div style={{ position:'absolute', top:70, right:14, width:'42%', bottom:14, background:'rgba(0,0,0,0.35)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:8, overflow:'hidden' }}>
-            <div style={{ display:'flex', borderBottom:'1px solid rgba(255,255,255,0.06)' }}>
-              {streams.map((s, i) => (
-                <div key={s} style={{ flex:1, padding:'7px 2px', textAlign:'center', fontFamily:'var(--font-mono)', fontSize:7, letterSpacing:'0.04em', textTransform:'uppercase', color: tab===i ? ACCENT : 'rgba(255,255,255,0.3)', borderBottom: tab===i ? `1.5px solid ${ACCENT}` : '1.5px solid transparent', transition:'color .3s' }}>{s}</div>
-              ))}
-            </div>
-            <div style={{ padding:'12px' }}>
-              <div style={{ height:4, width:'60%', background:'rgba(255,255,255,0.5)', borderRadius:2, marginBottom:8 }} />
-              <div style={{ height:3, width:'90%', background:'rgba(255,255,255,0.15)', borderRadius:2, marginBottom:4 }} />
-              <div style={{ height:3, width:'75%', background:'rgba(255,255,255,0.15)', borderRadius:2, marginBottom:4 }} />
-              <div style={{ height:3, width:'50%', background:'rgba(255,255,255,0.15)', borderRadius:2, marginBottom:10 }} />
-              <div style={{ display:'flex', gap:4, alignItems:'flex-end', height:36 }}>
-                {[55,80,40,95,60,70,45,85].map((h,i) => (
-                  <div key={i} style={{ flex:1, height:`${h}%`, borderRadius:2, background: i===3 ? ACCENT : `rgba(158,232,77,${0.1 + i*0.03})` }} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
 
     const NEXT = { name: 'Vanta Labs (this site)', cat: 'Self-published · Brand & marketing', href: 'Vanta Labs.html' };
 
@@ -214,7 +78,12 @@
                     </Reveal>
                   </div>
                   <Reveal delay={120} className="cs-hero-art">
-                    <HeroArt />
+                    <DeviceShot
+                      desktop="../assets/work/scis-desktop-light.jpg"
+                      mobile="../assets/work/scis-mobile.png"
+                      url="wits-scis.vercel.app"
+                      bg1="#08111e" bg2="#0e1a30"
+                    />
                   </Reveal>
                 </div>
               </div>
@@ -226,13 +95,13 @@
                 <div className="cs-2col">
                   <div>
                     <Reveal>
-                      <h2 className="h2">Seven years of important work, buried inside a bureaucratic website.</h2>
+                      <h2 className="h2">A clear vision the client could feel — that the first designs hadn't captured.</h2>
                     </Reveal>
                     <ol className="cs-steps">
                       {[
-                        { t: 'The problem', b: 'SCIS\'s research is urgent, politically-engaged, and globally cited. But the Wits University website couldn\'t communicate any of that urgency. Navigation, hierarchy, and tone all pushed against them.' },
-                        { t: 'The aspiration', b: 'A standalone site that feels like the centre it represents — rigorous and activist at once. Not a university microsite, but a proper editorial and research presence, capable of growing with the centre.' },
-                        { t: 'The complexity', b: 'SCIS produces across six interconnected research streams, nine partner countries, and seven years of publication history. Making that navigable — and meaningful — required real IA thinking, not just pretty pages.' },
+                        { t: 'The starting point', b: 'SCIS already had a standalone site in motion — and a set of designs on the table. But the work didn\'t land. It read as a generic university microsite where it needed to feel urgent, activist, and alive to the calibre of the research.' },
+                        { t: 'Why we were brought in', b: 'Not to start from zero, but to realise the vision the client already held in their head: a centre that reads as rigorous and activist at once, and a site that argues. We re-grounded the design in that intent.' },
+                        { t: 'The complexity', b: 'SCIS produces across six interconnected research streams, nine partner countries, and seven years of publication history. Making that navigable — and meaningful — required real IA thinking, not just a fresh coat of paint.' },
                       ].map((s, i) => (
                         <Reveal key={i} delay={i * 70} as="li" className="cs-step">
                           <span className="cs-step-n mono">0{i + 1}</span>
@@ -249,20 +118,22 @@
                       Inequality research sits at the intersection of academic rigour and
                       political urgency. The centre's funders include the Bill & Melinda Gates
                       Foundation, Ford Foundation, and GIZ. Its research shapes national budget
-                      decisions. It deserved a digital home that matched that weight.
+                      decisions. It deserved a digital home that matched that weight — and the
+                      designs in hand simply didn't.
                     </p>
                     <p className="lede" style={{ marginTop: 16 }}>
-                      We started by mapping seven years of output across the six research
-                      streams — Budgets, Wealth, Work, Care, and Climate. The IA challenge
-                      wasn't just organising content; it was building a system flexible enough
-                      to surface the work in ways that serve both academics looking for
-                      citations and policymakers looking for arguments.
+                      So we ran the brief backwards from the vision the client kept describing.
+                      We re-mapped seven years of output across the six research streams —
+                      Budgets, Wealth, Work, Care, and Climate — and rebuilt the design language
+                      around it: a system flexible enough to serve both academics looking for
+                      citations and policymakers looking for arguments, with a tone that finally
+                      felt like the centre itself.
                     </p>
                     <div style={{ marginTop: 32, padding: '24px 26px', background: 'var(--bg-2)', border: '1px solid var(--line)', borderLeft: `3px solid ${ACCENT}`, borderRadius: '0 8px 8px 0' }}>
                       <p style={{ margin: 0, fontSize: 15, fontStyle: 'italic', fontFamily: "'Instrument Serif', serif", color: 'var(--fg-2)', lineHeight: 1.6 }}>
-                        "We needed something that showed the breadth of the work without
-                        flattening it. Something that said: this place thinks seriously, and
-                        takes that thinking into the world."
+                        "We could picture exactly what this needed to feel like — the earlier
+                        designs just weren't it. We needed someone to take that picture seriously
+                        and actually build it."
                       </p>
                       <div className="mono dim" style={{ marginTop: 10, fontSize: 11 }}>— SCIS brief, Feb 2026</div>
                     </div>
@@ -280,8 +151,30 @@
                   </Reveal>
                 </div>
                 <Reveal>
-                  <div className="cs-visual-wrap">
-                    <ShowcaseArt />
+                  <div className="mono dim" style={{ marginBottom: 6, letterSpacing: '0.08em' }}>
+                    The brief we inherited → the vision, realised
+                  </div>
+                </Reveal>
+                <Reveal delay={60}>
+                  <div className="cs-compare">
+                    <div className="cs-compare-item">
+                      <div className="cs-compare-frame">
+                        <img src="../assets/work/scis-before-desktop.jpg" alt="Earlier SCIS design — before Vanta Labs" loading="lazy" />
+                      </div>
+                      <div className="cs-compare-cap">
+                        <span className="cs-compare-tag">Before</span>
+                        <span className="cs-compare-label">The designs already on the table — a stock-photo hero and a generic layout where the work needed urgency.</span>
+                      </div>
+                    </div>
+                    <div className="cs-compare-item">
+                      <div className="cs-compare-frame">
+                        <img src="../assets/work/scis-desktop-dark.png" alt="Launched SCIS site" loading="lazy" />
+                      </div>
+                      <div className="cs-compare-cap">
+                        <span className="cs-compare-tag cs-compare-tag--after">After</span>
+                        <span className="cs-compare-label">The realised vision — rigorous and activist, with a site that argues.</span>
+                      </div>
+                    </div>
                   </div>
                 </Reveal>
                 <div className="cs-approach-grid">
