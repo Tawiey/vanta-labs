@@ -1,4 +1,4 @@
-// work.jsx — Vanta Labs case studies + logo strip
+// work.jsx — Vanta Studio case studies + logo strip
 
 const { useState: useStateW, useEffect: useEffectW, useRef: useRefW } = React;
 
@@ -54,12 +54,12 @@ const CASE_STUDIES = [
   },
   {
     slug: 'vanta-labs',
-    name: 'Vanta Labs (this site)',
+    name: 'Vanta Studio (this site)',
     cat: 'Self-published · Brand & marketing',
     kind: 'IN-HOUSE',
     year: '2026',
     status: 'Live · v1',
-    href: 'cases/Vanta Labs.html',
+    href: 'cases/Vanta Studio.html',
     headline: 'A studio site, built in five tools and one weekend.',
     blurb:
       'The site you\'re reading. From a half-formed idea in ChatGPT, into Codex, refined in Stitch, polished in Claude — a working sketch of how AI-in-the-loop changes a studio\'s output. Meta, on purpose.',

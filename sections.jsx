@@ -1,4 +1,4 @@
-// sections.jsx — Vanta Labs homepage sections
+// sections.jsx — Vanta Studio homepage sections
 
 const { useState, useEffect, useRef, useCallback } = React;
 
@@ -115,11 +115,11 @@ function Nav({ accent, theme, onToggleTheme }) {
   return (
     <header className={'nav ' + (scrolled ? 'nav--scrolled' : '')}>
       <div className="nav-inner" style={{ gridTemplateColumns:'auto 1fr auto auto', gap:'12px' }}>
-        <a href="#top" className="brand" aria-label="Vanta Labs home">
+        <a href="#top" className="brand" aria-label="Vanta Studio home">
           <span className="brand-mark">
             <span className="brand-mark-inner" />
           </span>
-          <span className="brand-name">Vanta<span style={{ opacity: 0.5 }}>/</span>Labs</span>
+          <span className="brand-name">Vanta<span style={{ opacity: 0.5 }}>/</span>Studio</span>
         </a>
         <nav className="nav-links" aria-label="Primary">
           <a href="#work">Work</a>
@@ -288,7 +288,7 @@ function Hero({ accent, variant }) {
           </Reveal>
           <Reveal delay={220}>
             <p className="lede">
-              Vanta Labs is a small studio of product thinkers, designers and engineers.
+              Vanta Studio is a small team of product thinkers, designers and engineers.
               We turn fuzzy ideas into premium, conversion-ready products — in weeks,
               not quarters. AI in the loop, taste at the wheel.
             </p>
@@ -780,6 +780,100 @@ function Thinking() {
 // ─────────────────────────────────────────────────────────────────────────
 // FINAL CTA
 // ─────────────────────────────────────────────────────────────────────────
+function CallbackForm({ accent }) {
+  const [values, setValues] = useState({ name: '', company: '', phone: '', note: '', company_url: '' });
+  const [status, setStatus] = useState('idle'); // idle | submitting | success | error
+  const [error, setError] = useState('');
+
+  const onChange = (e) => setValues((v) => ({ ...v, [e.target.name]: e.target.value }));
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (status === 'submitting') return;
+    setStatus('submitting');
+    setError('');
+    try {
+      const res = await fetch('/api/callback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Couldn't send that. Please try again.");
+      setStatus('success');
+    } catch (err) {
+      setError(err.message || 'Something went wrong. Please try again.');
+      setStatus('error');
+    }
+  };
+
+  if (status === 'success') {
+    return (
+      <div className="cb-done" role="status">
+        <span className="cb-done-check" style={{ background: accent }} aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="var(--on-accent)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </span>
+        <div>
+          <div className="cb-done-h">Got it — we'll call you back.</div>
+          <p className="cb-done-p">Expect a call within one business day. In a hurry? Book a slot above, or email hello@vantalabs.co.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <form className="cb-form" onSubmit={onSubmit} noValidate>
+      {/* Honeypot — visually hidden, off-screen; bots fill it, humans don't. */}
+      <input
+        type="text" name="company_url" tabIndex="-1" autoComplete="off"
+        value={values.company_url} onChange={onChange}
+        className="cb-hp" aria-hidden="true"
+      />
+      <div className="cb-row">
+        <label className="cb-field">
+          <span className="cb-label">Name</span>
+          <input name="name" type="text" autoComplete="name" required
+            value={values.name} onChange={onChange} placeholder="Jane Doe" />
+        </label>
+        <label className="cb-field">
+          <span className="cb-label">Company <span className="cb-opt">optional</span></span>
+          <input name="company" type="text" autoComplete="organization"
+            value={values.company} onChange={onChange} placeholder="Acme Inc." />
+        </label>
+      </div>
+      <label className="cb-field">
+        <span className="cb-label">Phone</span>
+        <input name="phone" type="tel" autoComplete="tel" required inputMode="tel"
+          value={values.phone} onChange={onChange} placeholder="+27 …" />
+      </label>
+      <label className="cb-field">
+        <span className="cb-label">What are you building? <span className="cb-opt">optional</span></span>
+        <textarea name="note" rows="2"
+          value={values.note} onChange={onChange} placeholder="A sentence is plenty." />
+      </label>
+      {status === 'error' && <p className="cb-error" role="alert">{error}</p>}
+      <button type="submit" className="btn btn--accent btn--lg cb-submit"
+        style={{ ['--accent']: accent }} disabled={status === 'submitting'}>
+        {status === 'submitting' ? 'Sending…' : 'Request a callback'}
+        {status !== 'submitting' && (
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        )}
+      </button>
+      <p className="cb-consent">We'll only use your number to call you back about your project — never shared, POPIA-friendly.</p>
+    </form>
+  );
+}
+
+// When the Cal embed is healthy it intercepts the button click (via document
+// delegation) and opens the popup — this handler then does nothing. Only if the
+// embed script failed to load do we fall back to opening the booking page, so the
+// CTA is never a dead end.
+function openBookingFallback() {
+  if (typeof window !== 'undefined' && (window.__calEmbedFailed || !window.Cal)) {
+    window.open('https://cal.com/vanta-labs/discovery-call', '_blank', 'noopener');
+  }
+}
+
 function CTA({ accent }) {
   return (
     <section id="contact" className="section section--cta">
@@ -798,19 +892,36 @@ function CTA({ accent }) {
             </Reveal>
             <Reveal delay={180}>
               <p className="cta-sub">
-                30-minute intake call. Honest scope, honest timeline.
-                We pick up two new projects a month — currently booking late May 2026.
+                A 30-minute discovery call. Honest scope, honest timeline.
+                We pick up two new projects a month.
               </p>
             </Reveal>
-            <Reveal delay={260}>
-              <div className="cta-row">
-                <a href="mailto:hello@vantalabs.co" className="btn btn--accent btn--lg" style={{ ['--accent']: accent }}>
-                  Start a project
+            <div className="cta-paths">
+              <Reveal delay={240} className="cta-path">
+                <div className="mono dim cta-path-tag">Option A — fastest</div>
+                <h3 className="cta-path-h">Book a discovery call</h3>
+                <p className="cta-path-p">Pick a time that suits you. 30 minutes over video, straight onto your calendar.</p>
+                <button
+                  type="button"
+                  onClick={openBookingFallback}
+                  data-cal-namespace="discovery-call"
+                  data-cal-link="vanta-labs/discovery-call"
+                  data-cal-config='{"layout":"month_view"}'
+                  className="btn btn--accent btn--lg cta-path-btn"
+                  style={{ ['--accent']: accent }}
+                >
+                  Book a discovery call
                   <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                </a>
-                <a href="#" className="btn btn--ghost btn--lg">Book an intake call</a>
-                <span className="mono dim cta-mail">hello@vantalabs.co</span>
-              </div>
+                </button>
+              </Reveal>
+              <Reveal delay={320} className="cta-path">
+                <div className="mono dim cta-path-tag">Option B — we'll call you</div>
+                <h3 className="cta-path-h">Prefer a callback?</h3>
+                <CallbackForm accent={accent} />
+              </Reveal>
+            </div>
+            <Reveal delay={400}>
+              <p className="cta-mail-line">Old-school? <a href="mailto:hello@vantalabs.co">hello@vantalabs.co</a></p>
             </Reveal>
           </div>
         </div>
@@ -829,7 +940,7 @@ function Footer({ accent }) {
         <div className="footer-top">
           <div className="footer-brand">
             <span className="brand-mark"><span className="brand-mark-inner" /></span>
-            <span className="brand-name">Vanta<span style={{ opacity: 0.5 }}>/</span>Labs</span>
+            <span className="brand-name">Vanta<span style={{ opacity: 0.5 }}>/</span>Studio</span>
           </div>
           <div className="footer-cols">
             <div>
@@ -859,10 +970,10 @@ function Footer({ accent }) {
           </div>
         </div>
         <div className="footer-bottom">
-          <span className="mono dim">© 2026 Vanta Labs · Made in Africa, shipped worldwide.</span>
+          <span className="mono dim">© 2026 Vanta Studio · Made in Africa, shipped worldwide.</span>
           <span className="mono dim">
             <span className="status-dot" style={{ background: accent }} />
-            Booking · late May 2026
+            Booking new projects
           </span>
         </div>
         <div className="footer-mark" aria-hidden="true">VANTA</div>

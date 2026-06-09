@@ -1,4 +1,4 @@
-// app.jsx — Vanta Labs root
+// app.jsx — Vanta Studio root
 
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "theme": "dark",

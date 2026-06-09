@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Vanta Labs — Premium digital products, shipped fast.</title>
-  <meta name="description" content="Vanta Labs is a small studio of product thinkers, designers and engineers. We turn fuzzy ideas into premium, conversion-ready products in weeks, not quarters." />
+  <title>Vanta Studio — Premium digital products, shipped fast.</title>
+  <meta name="description" content="Vanta Studio is a small team of product thinkers, designers and engineers. We turn fuzzy ideas into premium, conversion-ready products in weeks, not quarters." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=2" />
 </head>
 <body>
   <div id="root"></div>
@@ -23,5 +23,25 @@
   <script type="text/babel" src="sections.jsx"></script>
   <script type="text/babel" src="work.jsx"></script>
   <script type="text/babel" src="app.jsx"></script>
+
+  <!-- Cal.com embed. The official loader injects app.cal.com/embed/embed.js at
+       runtime, so it can't carry an SRI hash like the React/Babel CDNs above —
+       a deliberate exception (see CLAUDE.md §2/§7). Buttons opt in with
+       data-cal-link / data-cal-namespace; Cal uses click delegation, so it works
+       on React-rendered elements. -->
+  <script type="text/javascript">
+    (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+    Cal("init", "discovery-call", { origin: "https://app.cal.com" });
+    Cal.ns["discovery-call"]("ui", { cssVarsPerTheme: { dark: { "cal-brand": "#a8ff0e" } }, hideEventTypeDetails: false, layout: "month_view" });
+
+    // Failover flag: the loader above appends embed.js to <head>. If it can't
+    // load (CDN/network down), the popup delegation never attaches — so flag it
+    // and the booking button falls back to opening cal.com directly.
+    (function () {
+      var s = document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
+      if (!s) { window.__calEmbedFailed = true; return; }
+      s.addEventListener("error", function () { window.__calEmbedFailed = true; });
+    })();
+  </script>
 </body>
 </html>
