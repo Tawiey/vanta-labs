@@ -1,4 +1,4 @@
-/* Vanta Labs — tech-forward minimal, dark-first */
+/* Vanta Studio — tech-forward minimal, dark-first */
 
 :root {
   --bg: #0a0908;
@@ -898,7 +898,7 @@ button { font: inherit; }
   align-self: flex-start;
   transition: background .2s, border-color .2s, color .2s;
 }
-.offer-cta:hover { background: var(--bg-3); border-color: var(--fg-3); }
+.offer-cta:not(.offer-cta--accent):hover { background: var(--bg-3); border-color: var(--fg-3); }
 .offer-cta--accent {
   background: var(--accent); color: #0a0908; border-color: var(--accent);
 }
@@ -982,11 +982,108 @@ button { font: inherit; }
   margin: 0 0 36px;
   line-height: 1.55;
 }
-.cta-row {
-  display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+/* Two contact paths: book a call · request a callback */
+.cta-paths {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 8px;
 }
-.cta-mail { margin-left: auto; }
-@media (max-width: 640px) { .cta-mail { margin-left: 0; } }
+@media (max-width: 760px) { .cta-paths { grid-template-columns: 1fr; } }
+.cta-path {
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  padding: clamp(20px, 2.4vw, 28px);
+  display: flex;
+  flex-direction: column;
+}
+.cta-path-tag { display: block; margin-bottom: 12px; }
+.cta-path-h {
+  font-size: clamp(20px, 2vw, 25px);
+  font-weight: 500; letter-spacing: -0.02em;
+  margin: 0 0 8px;
+}
+.cta-path-p {
+  color: var(--fg-2); font-size: 14.5px; line-height: 1.55;
+  margin: 0 0 20px; max-width: 38ch;
+}
+.cta-path-btn { align-self: flex-start; margin-top: auto; }
+
+/* Callback form */
+.cb-form { display: flex; flex-direction: column; gap: 12px; }
+.cb-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 420px) { .cb-row { grid-template-columns: 1fr; } }
+.cb-field { display: flex; flex-direction: column; gap: 6px; }
+.cb-label {
+  font-size: 12px; color: var(--fg-3); font-weight: 500;
+  display: flex; align-items: baseline; gap: 6px;
+}
+.cb-opt {
+  font-family: var(--font-mono);
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--fg-4);
+}
+.cb-form input,
+.cb-form textarea {
+  width: 100%;
+  font: inherit; font-size: 14.5px;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--line-2);
+  border-radius: 10px;
+  padding: 10px 12px;
+  transition: border-color .2s, box-shadow .2s;
+  resize: vertical;
+}
+.cb-form input::placeholder,
+.cb-form textarea::placeholder { color: var(--fg-4); }
+.cb-form input:focus,
+.cb-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+/* Honeypot — kept out of sight and out of the tab order. */
+.cb-hp {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.cb-submit { align-self: flex-start; margin-top: 4px; }
+.cb-submit:disabled { opacity: 0.6; cursor: default; transform: none; filter: none; }
+.cb-error {
+  margin: 0; font-size: 13px; color: #ff6b5e;
+}
+.cb-consent {
+  margin: 2px 0 0; font-size: 12px; line-height: 1.5; color: var(--fg-4);
+  max-width: 44ch;
+}
+
+/* Callback success state */
+.cb-done {
+  display: flex; gap: 14px; align-items: flex-start;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  padding: 22px;
+}
+.cb-done-check {
+  flex: none;
+  width: 26px; height: 26px; border-radius: 999px;
+  display: grid; place-items: center;
+}
+.cb-done-h { font-weight: 500; font-size: 16px; margin-bottom: 4px; }
+.cb-done-p { margin: 0; color: var(--fg-2); font-size: 14px; line-height: 1.55; }
+
+.cta-mail-line {
+  margin: 22px 0 0;
+  font-size: 14px; color: var(--fg-3);
+}
+.cta-mail-line a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; }
+.cta-mail-line a:hover { color: var(--accent-ink); }
 
 /* ─────────── Footer ─────────── */
 .footer {

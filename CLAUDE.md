@@ -1,4 +1,4 @@
-# CLAUDE.md — Vanta Labs site
+# CLAUDE.md — Vanta Studio site
 
 Context for AI agents working on this repository. Read this first.
 
@@ -6,7 +6,7 @@ Context for AI agents working on this repository. Read this first.
 
 ## 1. What this site is
 
-**Vanta Labs** is a small product/design/engineering studio. This repo is its
+**Vanta Studio** is a small product/design/engineering studio. This repo is its
 **marketing site** — a single-page landing experience plus a handful of
 case-study detail pages.
 
@@ -17,7 +17,7 @@ case-study detail pages.
    "Outcomes, not just pretty screenshots." Case studies lead with the problem,
    the approach, and real results.
 3. **Demonstrate the studio's edge** — premium, confident, tech-forward craft, and
-   an "AI-in-the-loop" workflow (the Vanta Labs self-referential case study is the
+   an "AI-in-the-loop" workflow (the Vanta Studio self-referential case study is the
    thesis: idea → GPT → Codex → Stitch → Claude → live).
 
 **Voice:** confident, concrete, a little wry. South African studio ("Made in
@@ -50,6 +50,13 @@ python3 -m http.server 8000
 # case study: http://localhost:8000/cases/Aucor%20Property.html
 ```
 
+> **One server-side exception:** `api/callback.js` is a **Vercel serverless
+> function** (the contact "request a callback" handler — see §8). The front end is
+> still pure static / no-build; this single function is the only piece that needs a
+> runtime. It does **not** run under `python -m http.server` (the form will 404) —
+> use `vercel dev` or a deployed Vercel preview to exercise it. **The site is
+> deployed on Vercel.**
+
 ---
 
 ## 3. File map
@@ -65,6 +72,7 @@ python3 -m http.server 8000
 | `cases/*.html` | Self-contained case-study detail pages (one per project). Each defines its own `ACCENT`, inline page components, and `Page`. |
 | `cases/shared.jsx` | Shared case-page components: `Reveal`, `Tilt`, `Eyebrow`, `CaseNav`, `CaseFooter`, `DeviceShot`. |
 | `cases/case-study.css` | Layout for case-study pages (`.cs-*`, `.shot` consumers, gallery, compare). |
+| `api/callback.js` | **Vercel serverless function.** Receives the contact "request a callback" form, validates it, writes a row to the Notion CRM database. Env: `NOTION_TOKEN`, `NOTION_DATABASE_ID`. The only server-side code in the repo (§8). |
 | `assets/work/` | Real screenshots used in case cards + case pages (see §6). |
 | `.context/` | Conductor scratch space (gitignored). Source attachments live here. |
 
@@ -198,3 +206,48 @@ Current assets: `aucor-desktop.jpg`, `aucor-mobile.png`, `aucor-wire-{desktop,si
   intentional — check any new accent-on-light text against the light palette.
 - **No tests/CI.** Verify visually: serve statically and check homepage `#work`,
   both case pages, the theme toggle, and ~375px / ~1280px widths.
+- **Brand name vs. identifiers.** The brand is **Vanta Studio**. But several
+  real-world identifiers deliberately keep the original `vanta-labs` / `vantalabs`
+  form and must NOT be "fixed" to match the brand unless the underlying account
+  actually changes: the email `hello@vantalabs.co`, the Cal.com handle in the
+  booking URL / `data-cal-link` (`vanta-labs/discovery-call`), and the
+  `slug: 'vanta-labs'` in `work.jsx`. The codename `vanta` (the hero cube,
+  `vanta init`, `~/vanta`) also stays — it lives on inside "Vanta Studio".
+- **CSS cache-buster.** `index.html` links the stylesheet as `styles.css?v=N`.
+  Bump `N` whenever a `styles.css` change must defeat a stale browser cache during
+  testing/deploy. (Case pages currently link `../styles.css` unversioned.)
+
+---
+
+## 8. Contact & conversion (booking + callback)
+
+The `#contact` section (`CTA` + `CallbackForm` in `sections.jsx`) offers **two
+paths** — there is intentionally no email-first "Start a project" button here:
+
+- **Book a discovery call** — a **Cal.com popup**. The official embed loader is
+  inline at the bottom of `index.html`; the button opts in with
+  `data-cal-namespace="discovery-call"` + `data-cal-link="vanta-labs/discovery-call"`.
+  Cal opens the popup via document-level click **delegation**, so it works on the
+  React-rendered button. An `onClick={openBookingFallback}` opens cal.com in a new
+  tab **only** when the embed script failed to load (`window.__calEmbedFailed`), so
+  the CTA is never a dead end.
+- **Request a callback** — `CallbackForm` POSTs JSON to `/api/callback`. Name +
+  Phone are required; Company + Note optional. There's a hidden honeypot field
+  (`company_url`) for spam. Success/error states render inline. Includes a POPIA
+  consent line.
+
+**Data store:** `/api/callback` creates a page in a **Notion** database
+("Vanta Studio — Callback Requests": Name, Company, Phone, Note, Status, Submitted).
+Env on Vercel: `NOTION_TOKEN` (internal integration secret) and `NOTION_DATABASE_ID`.
+The database must be **shared with that integration** or the Notion API returns
+"object not found".
+
+**Gotchas:**
+- The Cal loader injects `app.cal.com/embed/embed.js` at runtime → **no SRI**
+  (documented exception, §2/§7). Its third loader argument must be `"init"` and
+  match the `Cal("init", …)` keyword; if it doesn't, the namespace never registers
+  and the button is silently inert.
+- Keep query strings **out of `data-cal-link`** (use `data-cal-config` / the popup
+  config). A `?param` in `data-cal-link` corrupts the parsed event slug.
+- Triggering via a plain `<button>` (not an `<a href>`) avoids a double-open (popup
+  *and* navigation) — the fallback navigation lives in the JS handler instead.

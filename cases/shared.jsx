@@ -1,4 +1,4 @@
-// shared.jsx — shared components for Vanta Labs case study pages
+// shared.jsx — shared components for Vanta Studio case study pages
 
 const { useState, useEffect, useRef } = React;
 
@@ -118,9 +118,9 @@ function CaseNav({ accent }) {
   return (
     <header className={'nav ' + (scrolled ? 'nav--scrolled' : '')}>
       <div className="nav-inner" style={{ gridTemplateColumns:'auto 1fr auto auto', gap:'12px' }}>
-        <a href="../index.html" className="brand" aria-label="Vanta Labs home">
+        <a href="../index.html" className="brand" aria-label="Vanta Studio home">
           <span className="brand-mark"><span className="brand-mark-inner" /></span>
-          <span className="brand-name">Vanta<span style={{ opacity: 0.5 }}>/</span>Labs</span>
+          <span className="brand-name">Vanta<span style={{ opacity: 0.5 }}>/</span>Studio</span>
         </a>
         <nav className="nav-links" aria-label="Primary">
           <a href="../index.html#work">Work</a>
@@ -164,7 +164,7 @@ function CaseFooter({ accent }) {
         <div className="footer-top">
           <div className="footer-brand">
             <span className="brand-mark"><span className="brand-mark-inner" /></span>
-            <span className="brand-name">Vanta<span style={{ opacity: 0.5 }}>/</span>Labs</span>
+            <span className="brand-name">Vanta<span style={{ opacity: 0.5 }}>/</span>Studio</span>
           </div>
           <div className="footer-cols">
             <div>
@@ -194,10 +194,10 @@ function CaseFooter({ accent }) {
           </div>
         </div>
         <div className="footer-bottom">
-          <span className="mono dim">© 2026 Vanta Labs · Made in Africa, shipped worldwide.</span>
+          <span className="mono dim">© 2026 Vanta Studio · Made in Africa, shipped worldwide.</span>
           <span className="mono dim">
             <span className="status-dot" style={{ background: accent }} />
-            Booking · late May 2026
+            Booking new projects
           </span>
         </div>
         <div className="footer-mark" aria-hidden="true">VANTA</div>
