@@ -14,6 +14,7 @@ const CASE_STUDIES = [
     year: '2026',
     status: 'Launching mid-2026',
     href: 'cases/Aucor Property.html',
+    locked: true,
     headline: 'A 30-year auction house, rewritten for the way buyers actually decide today.',
     blurb:
       'Commercial & industrial property auctions, redesigned end-to-end. We lifted Aucor out of the dated PHP era and into a confidence-led, mobile-first experience that turns curious browsers into pre-registered bidders.',
@@ -37,6 +38,7 @@ const CASE_STUDIES = [
     year: '2026',
     status: 'Launching mid-2026',
     href: 'cases/SCIS at Wits.html',
+    locked: true,
     headline: 'Carving out space inside a 100-year university for a centre that turns research into pressure.',
     blurb:
       'The Southern Centre for Inequality Studies needed to step out from under the Wits parent site to tell its own story — partners, themes, impact, voices. We built a standalone home that gives weight to evidence and the people behind it.',
@@ -272,7 +274,18 @@ function CaseHeroCard({ c, span }) {
       <CaseArt kind={c.art} palette={c.palette} accent={c.accent} media={c.media} />
       <div className="case-card-foot">
         <div className="case-card-l">
-          <div className="mono dim case-card-kind">{c.kind} · {c.year}</div>
+          <div className="mono dim case-card-kind">
+            {c.kind} · {c.year}
+            {c.locked && (
+              <span className="case-card-lock" title="Password-protected">
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="4" y="10" width="16" height="11" rx="2" stroke="currentColor" strokeWidth="2.4" />
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="2.4" />
+                </svg>
+                Private
+              </span>
+            )}
+          </div>
           <div className="case-card-name">{c.name}</div>
           <div className="case-card-cat dim">{c.cat}</div>
         </div>

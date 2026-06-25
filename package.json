@@ -1,0 +1,10 @@
+{
+  "name": "vanta-studio-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Vanta Studio marketing site. Static / no front-end build (see CLAUDE.md §2). This manifest declares the @vercel/functions dependency used by middleware.js and marks the server code as ESM. The middleware entrypoint must be middleware.js (Vercel does not detect .mjs), so the project is ESM and the api/ serverless functions use ESM `export default` too.",
+  "dependencies": {
+    "@vercel/functions": "^2.0.0"
+  }
+}

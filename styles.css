@@ -1596,6 +1596,23 @@ button { font: inherit; }
   font-size: 10px;
   margin-bottom: 6px;
 }
+/* "Private" chip on password-protected case cards. The lime accent is used as a
+   FILL here (chip border/icon), which stays legible in both themes; the label
+   text uses --fg-2 rather than an inline accent colour (see CLAUDE.md §4). */
+.case-card-lock {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-left: 8px;
+  padding: 2px 7px 2px 6px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--fg-2);
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
+.case-card-lock svg { color: var(--accent-ink); flex-shrink: 0; }
+[data-theme="light"] .case-card-lock {
+  border-color: color-mix(in srgb, var(--accent-ink) 28%, transparent);
+}
 .case-card-name {
   font-size: 22px;
   font-weight: 500;
