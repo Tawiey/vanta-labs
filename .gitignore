@@ -1,0 +1,6 @@
+# Dependencies (installed by Vercel at build time from package-lock.json).
+# The lockfile IS committed for reproducible builds; the tree is not.
+node_modules/
+
+# Vercel local dev / build output
+.vercel/

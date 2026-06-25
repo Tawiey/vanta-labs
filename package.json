@@ -1,0 +1,9 @@
+{
+  "name": "vanta-studio-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vanta Studio marketing site. Static / no build step (see CLAUDE.md §2). This manifest exists only to declare the @vercel/functions dependency used by middleware.mjs — there is no front-end bundling. Do NOT add a \"type\":\"module\" field: it would switch the CommonJS serverless functions in api/ to ESM and break them (the middleware uses a .mjs extension precisely to stay ESM without that flag).",
+  "dependencies": {
+    "@vercel/functions": "^2.0.0"
+  }
+}

@@ -1,0 +1,165 @@
+<!doctype html>
+<!--
+  Password prompt for the protected case studies. middleware.mjs rewrites an
+  unauthenticated request for a protected /cases/*.html page to this file, so it
+  renders AT the case-study URL. Asset paths are root-absolute (/styles.css) so
+  they resolve no matter which /cases/... URL we're shown at. On a correct
+  password the page reloads; the cookie is now set and middleware serves the real
+  page (see CLAUDE.md §9).
+-->
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Private case study — Vanta Studio</title>
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/styles.css?v=3" />
+
+  <style>
+    /* Layout-only styles; colours come from the shared design tokens in styles.css. */
+    .unlock-wrap {
+      min-height: 100svh;
+      display: grid; place-items: center;
+      padding: var(--gutter);
+    }
+    .unlock-card {
+      width: 100%; max-width: 420px;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: clamp(26px, 5vw, 38px);
+    }
+    .unlock-brand { margin-bottom: 26px; }
+    .unlock-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.12em;
+      color: var(--fg-3);
+      display: inline-flex; align-items: center; gap: 7px;
+      margin-bottom: 14px;
+    }
+    .unlock-lock {
+      width: 13px; height: 13px; display: inline-block; color: var(--accent-ink);
+    }
+    .unlock-h {
+      font-size: clamp(24px, 4.4vw, 30px);
+      font-weight: 500; letter-spacing: -0.02em; line-height: 1.12;
+      margin: 0 0 10px;
+    }
+    .unlock-p {
+      color: var(--fg-2); font-size: 14.5px; line-height: 1.5;
+      margin: 0 0 22px;
+    }
+    .unlock-field { display: block; margin-bottom: 14px; }
+    .unlock-label {
+      display: block; font-size: 12.5px; color: var(--fg-2); margin-bottom: 7px;
+    }
+    .unlock-input {
+      width: 100%; box-sizing: border-box;
+      padding: 12px 14px; border-radius: 10px;
+      background: var(--bg); border: 1px solid var(--line-2); color: var(--fg);
+      font-family: var(--font-sans); font-size: 15px;
+      transition: border-color .2s;
+    }
+    .unlock-input:focus { outline: none; border-color: var(--fg-3); }
+    .unlock-submit { width: 100%; justify-content: center; }
+    .unlock-error {
+      color: #ff6b5e; font-size: 13px; margin: 0 0 14px; min-height: 0;
+    }
+    /* Honeypot — off-screen; bots fill it, humans don't. */
+    .unlock-hp {
+      position: absolute; left: -9999px; width: 1px; height: 1px;
+      opacity: 0; pointer-events: none;
+    }
+    .unlock-foot {
+      margin-top: 22px; font-size: 12.5px; color: var(--fg-3); line-height: 1.5;
+    }
+    .unlock-foot a { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 2px; }
+  </style>
+</head>
+<body>
+  <main class="unlock-wrap">
+    <div class="unlock-card">
+      <a href="/" class="brand unlock-brand" aria-label="Vanta Studio home">
+        <span class="brand-mark"><span class="brand-mark-inner"></span></span>
+        <span class="brand-name">Vanta<span style="opacity:.5">/</span>Studio</span>
+      </a>
+
+      <div class="unlock-eyebrow">
+        <svg class="unlock-lock" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="4" y="10" width="16" height="11" rx="2" stroke="currentColor" stroke-width="2"/>
+          <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        Private case study
+      </div>
+
+      <h1 class="unlock-h">This one's password-protected.</h1>
+      <p class="unlock-p">Enter the password the studio shared with you to view the full case study. Don't have it? <a href="/#contact" style="color:var(--accent-ink);text-decoration:underline;text-underline-offset:2px;">Get in touch.</a></p>
+
+      <form id="unlock-form" novalidate>
+        <input type="text" name="company_url" class="unlock-hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <label class="unlock-field">
+          <span class="unlock-label">Password</span>
+          <input id="unlock-password" name="password" type="password" class="unlock-input"
+            autocomplete="off" autofocus required placeholder="••••••••" />
+        </label>
+        <p class="unlock-error" id="unlock-error" role="alert"></p>
+        <button type="submit" class="btn btn--accent btn--lg unlock-submit" id="unlock-submit">
+          <span id="unlock-submit-label">Unlock case study</span>
+          <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+
+      <p class="unlock-foot">Access is granted by Vanta Studio. The password unlocks every protected case study for this browser.</p>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var form = document.getElementById('unlock-form');
+      var input = document.getElementById('unlock-password');
+      var errEl = document.getElementById('unlock-error');
+      var btn = document.getElementById('unlock-submit');
+      var label = document.getElementById('unlock-submit-label');
+      var submitting = false;
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        if (submitting) return;
+        submitting = true;
+        errEl.textContent = '';
+        btn.disabled = true;
+        label.textContent = 'Unlocking…';
+
+        try {
+          var res = await fetch('/api/unlock', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              password: input.value,
+              company_url: form.company_url.value,
+            }),
+          });
+          var data = await res.json().catch(function () { return {}; });
+          if (!res.ok) throw new Error(data.error || 'That didn’t work. Please try again.');
+          // Cookie is set — reload re-requests this URL and middleware now serves
+          // the real case study.
+          window.location.reload();
+          return;
+        } catch (err) {
+          errEl.textContent = err.message || 'Something went wrong. Please try again.';
+          submitting = false;
+          btn.disabled = false;
+          label.textContent = 'Unlock case study';
+          input.focus();
+          input.select();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
