@@ -19,7 +19,7 @@ function richText(content) {
   return content ? { rich_text: [{ text: { content } }] } : { rich_text: [] };
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });

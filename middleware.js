@@ -6,10 +6,11 @@
 //     rewritten in place to the password prompt (unlock.html), so the real HTML
 //     is never served to an unauthenticated visitor.
 //
-// This is ESM (.mjs) on purpose: Vercel requires non-framework middleware to be
-// ESM, and using the extension keeps the CommonJS functions in api/ working
-// without a global "type":"module" (see CLAUDE.md). The signing half of the
-// cookie contract lives in api/unlock.js — keep the two in sync.
+// Vercel only recognises the middleware entrypoint as `middleware.js` (or .ts),
+// NOT `.mjs` — a .mjs file is treated as an inert asset and never runs. The
+// project is ESM ("type":"module" in package.json), so this file and the api/
+// functions all use ESM. The signing half of the cookie contract lives in
+// api/unlock.js — keep the two in sync.
 //
 // Env: CASE_ACCESS_SECRET (same value as api/unlock.js). If it is unset, every
 // protected request fails closed to the prompt.

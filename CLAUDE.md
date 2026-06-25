@@ -35,8 +35,10 @@ Africa, shipped worldwide"), Johannesburg / Cape Town, remote-global.
 - **No bundler, no TypeScript, no tests, no lint.** The *front end* has no build
   step. There is a minimal root `package.json` (+ `package-lock.json`), but it is
   **server-only** — it just declares the `@vercel/functions` dependency that
-  `middleware.mjs` imports (the case-study access gate, §9). It adds **no**
-  front-end bundling, and it deliberately omits `"type":"module"` (see §9).
+  `middleware.js` imports (the case-study access gate, §9). It adds **no**
+  front-end bundling. It sets `"type":"module"` — the middleware entrypoint must
+  be `middleware.js` (Vercel doesn't detect `.mjs`), so all server code is ESM
+  (see §9).
 - Modules don't use ES imports. Each `.jsx` file defines globals and publishes them
   with `Object.assign(window, { … })` at the bottom. **Load order matters** — see
   `index.html`:
@@ -78,9 +80,9 @@ python3 -m http.server 8000
 | `cases/case-study.css` | Layout for case-study pages (`.cs-*`, `.shot` consumers, gallery, compare). |
 | `api/callback.js` | **Vercel serverless function.** Receives the contact "request a callback" form, validates it, writes a row to the Notion CRM database. Env: `NOTION_TOKEN`, `NOTION_DATABASE_ID` (§8). |
 | `api/unlock.js` | **Vercel serverless function.** Verifies the shared case-study password and sets the signed access cookie. Env: `CASE_STUDY_PASSWORD`, `CASE_ACCESS_SECRET` (§9). |
-| `middleware.mjs` | **Vercel Routing (Edge) Middleware.** Gates the protected case studies — checks the access cookie, rewrites to `unlock.html` when missing/invalid (§9). |
+| `middleware.js` | **Vercel Routing (Edge) Middleware.** Gates the protected case studies — checks the access cookie, rewrites to `unlock.html` when missing/invalid (§9). Must be `.js`, not `.mjs` (§9). |
 | `unlock.html` | Password prompt page served in place of a protected case study (§9). |
-| `package.json` / `package-lock.json` | Server-only manifest declaring `@vercel/functions` for `middleware.mjs`. No front-end build (§2/§9). |
+| `package.json` / `package-lock.json` | Server-only manifest declaring `@vercel/functions` for `middleware.js`; marks server code ESM (`"type":"module"`). No front-end build (§2/§9). |
 | `assets/work/` | Real screenshots used in case cards + case pages (see §6). |
 | `.context/` | Conductor scratch space (gitignored). Source attachments live here. |
 
@@ -268,7 +270,7 @@ Selected **client** case studies are behind a single shared password. The gate i
 **server-side** — the protected HTML is genuinely withheld until the password is
 verified, not just hidden in the browser. Three pieces:
 
-- **`middleware.mjs`** (Vercel Edge Routing Middleware, runs on `matcher:
+- **`middleware.js`** (Vercel Edge Routing Middleware, runs on `matcher:
   ['/cases/:path*']`) — for each request it decodes the pathname and checks it
   against an in-code `PROTECTED` allowlist. Public paths (the **Vanta Studio**
   case study, plus `shared.jsx` / `case-study.css` / images under `/cases/`) call
@@ -279,12 +281,12 @@ verified, not just hidden in the browser. Three pieces:
   on success it `location.reload()`s and the now-present cookie lets middleware
   serve the real page. Loads `/styles.css` by **root-absolute** path (it renders
   at a `/cases/...` URL, so relative paths would break).
-- **`api/unlock.js`** (Node serverless, CommonJS like `callback.js`) —
+- **`api/unlock.js`** (Node serverless, ESM `export default` like `callback.js`) —
   constant-time-compares the submitted password to `CASE_STUDY_PASSWORD`; on a
   match sets `vs_case_access` (`HttpOnly; Secure; SameSite=Lax; Path=/`, 30-day
   Max-Age).
 
-**Cookie & token contract** (keep `api/unlock.js` and `middleware.mjs` in sync):
+**Cookie & token contract** (keep `api/unlock.js` and `middleware.js` in sync):
 `vs_case_access = <expMs>.<base64url(HMAC-SHA256(String(expMs), CASE_ACCESS_SECRET))>`.
 Valid iff the signature verifies **and** `Date.now() < expMs`. Signed in Node
 (`crypto`), verified in Edge (`crypto.subtle`) — same HMAC, so it round-trips.
@@ -298,16 +300,19 @@ Valid iff the signature verifies **and** `Date.now() < expMs`. Signed in Node
   if the password itself leaked).
 
 **To protect another case study:** add its decoded path to `PROTECTED` in
-`middleware.mjs` (e.g. `'/cases/New Case.html'`) and set `locked: true` on its
+`middleware.js` (e.g. `'/cases/New Case.html'`) and set `locked: true` on its
 `CASE_STUDIES` entry in `work.jsx` (renders the `🔒 Private` chip via
 `CaseHeroCard` / `.case-card-lock`). To make one public again, remove both.
 
 **Gotchas:**
-- **`middleware.mjs` is ESM, `api/*.js` stay CommonJS.** Vercel requires a
-  non-framework middleware to be ESM. We use the `.mjs` extension instead of
-  adding `"type":"module"` to `package.json` — that flag would flip every
-  `api/*.js` to ESM and break their `module.exports` (§2). **Do not add
-  `"type":"module"`.**
+- **The middleware entrypoint MUST be `middleware.js`, not `.mjs`.** Vercel only
+  detects `middleware.js`/`middleware.ts` at the root — a `middleware.mjs` is
+  treated as an inert static file and silently never runs (pages just open with
+  no gate and no error). Because `middleware.js` uses `import`/`export`, the
+  project sets `"type":"module"`, which makes **all** server code ESM — so the
+  `api/*.js` functions use `export default async function handler` (not
+  `module.exports`) and `import … from 'node:crypto'` (not `require`). The
+  browser-loaded `.jsx` files are unaffected (they run through Babel, not Node).
 - **Local dev needs `vercel dev`.** The middleware and `/api/unlock` do **not**
   run under `python -m http.server` (the gate is absent and the form 404s) —
   same class of exception as `api/callback.js` (§2). `Secure` cookies still work

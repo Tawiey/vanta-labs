@@ -10,13 +10,13 @@
 //                        cookie. Never shared. Rotate it to invalidate all
 //                        existing sessions.
 //
-// Cookie & token contract (MUST stay in sync with middleware.mjs):
+// Cookie & token contract (MUST stay in sync with middleware.js):
 //   name   vs_case_access
 //   value  <expMs>.<base64url(HMAC-SHA256(String(expMs), CASE_ACCESS_SECRET))>
 //   valid  signature matches AND Date.now() < expMs
 //   attrs  HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=2592000 (30 days)
 
-const crypto = require('crypto');
+import crypto from 'node:crypto';
 
 const COOKIE_NAME = 'vs_case_access';
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 30; // 30 days
@@ -43,7 +43,7 @@ function clean(value, limit) {
   return typeof value === 'string' ? value.slice(0, limit) : '';
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
