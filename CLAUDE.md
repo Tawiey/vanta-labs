@@ -82,6 +82,8 @@ python3 -m http.server 8000
 | `api/unlock.js` | **Vercel serverless function.** Verifies the shared case-study password and sets the signed access cookie. Env: `CASE_STUDY_PASSWORD`, `CASE_ACCESS_SECRET` (§9). |
 | `middleware.js` | **Vercel Routing (Edge) Middleware.** Gates the protected case studies — checks the access cookie, rewrites to `unlock.html` when missing/invalid (§9). Must be `.js`, not `.mjs` (§9). |
 | `unlock.html` | Password prompt page served in place of a protected case study (§9). |
+| `references/index.html` | Unlisted client-reference form, shared by link (`/references/?project=…&when=YYYY`). Plain HTML + inline script (§10). |
+| `api/reference.js` | **Vercel serverless function.** Saves a client reference to the Notion "Client References" database. Env: `NOTION_TOKEN`, `NOTION_REFERENCES_DATABASE_ID` (§10). |
 | `package.json` / `package-lock.json` | Server-only manifest declaring `@vercel/functions` for `middleware.js`; marks server code ESM (`"type":"module"`). No front-end build (§2/§9). |
 | `assets/work/` | Real screenshots used in case cards + case pages (see §6). |
 | `.context/` | Conductor scratch space (gitignored). Source attachments live here. |
@@ -322,3 +324,31 @@ Valid iff the signature verifies **and** `Date.now() < expMs`. Signed in Node
   not the image files.
 - Adding `package.json` must not introduce a build: keep it script-free so Vercel
   keeps treating the project as static-plus-functions (Framework Preset "Other").
+
+---
+
+## 10. Client reference form
+
+An **unlisted** page at **`/references/`** (`references/index.html`) that the
+owner sends to past clients to collect a reference: project name, when (month
+optional + year), a 1–5 star rating, the experience, name (+ optional role and
+company), and an opt-in "may quote publicly" checkbox (unticked by default, for
+POPIA). It is not linked from the nav and is `noindex`. There is no password
+because the link itself is the invitation. The honeypot (`company_url`) handles
+spam.
+
+- **Tailored links:** `?project=<name>&when=<YYYY>` prefill the form.
+- **Front end:** plain HTML + a small inline script, reusing the callback form's
+  `.cb-*` field styles from `styles.css`. Root-absolute asset paths.
+- **Back end:** `api/reference.js` (ESM, same shape as `callback.js`) creates a
+  page in the Notion database **"Vanta Studio — Client References"**:
+  `Name` (title), `Role`, `Company`, `Project`, `When` (text), `Rating`
+  (number), `Experience` (text, ≤1,900 chars), `Can quote` (checkbox),
+  `Status` (select, `New`), `Submitted` (created time). Env:
+  `NOTION_REFERENCES_DATABASE_ID` (+ the shared `NOTION_TOKEN`); the database
+  must be connected to the integration.
+- Like `/api/callback`, it 404s under `python -m http.server`. Use `vercel dev`
+  or a preview.
+- Only quotes with `Can quote` ticked may be published on the site. Never
+  paraphrase or invent testimonials (§7). Scope/next steps:
+  `docs/plans/2026-10-06-001-feat-client-reference-form-plan.md`.
