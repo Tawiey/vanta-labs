@@ -1,5 +1,5 @@
-// Vercel serverless function — receives a client reference / testimonial from
-// the shareable /references page and creates a row in a Notion database.
+// Vercel serverless function — receives a client testimonial / testimonial from
+// the shareable /testimonials page and creates a row in a Notion database.
 //
 // Required environment variables (set in Vercel → Project → Settings → Env Vars):
 //   NOTION_TOKEN                   Same internal integration secret as /api/callback.
@@ -97,7 +97,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ ok: true });
   } catch (err) {
-    console.error('Reference handler failed', err);
+    console.error('Testimonial handler failed', err);
     return res.status(500).json({ error: 'Something went wrong. Please email hello@vantalabs.co.' });
   }
 }

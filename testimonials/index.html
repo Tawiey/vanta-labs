@@ -1,15 +1,15 @@
 <!doctype html>
 <!--
-  Client reference form — a standalone, unlisted page the studio shares by link
-  with past clients (see CLAUDE.md §10). Served at /references/. Plain HTML + a
+  Client testimonial form — a standalone, unlisted page the studio shares by link
+  with past clients (see CLAUDE.md §10). Served at /testimonials/. Plain HTML + a
   small inline script (no React/Babel needed for one form). Asset paths are
-  root-absolute so the page works at /references and /references/.
+  root-absolute so the page works at /testimonials and /testimonials/.
 
   Optional query params prefill the form so each client gets a tailored link:
-    /references/?project=Aucor%20Property&when=2025
+    /testimonials/?project=Aucor%20Property&when=2025
   `project` → project name, `when` → year (4 digits).
 
-  Submits JSON to /api/reference, which writes a row to the Notion
+  Submits JSON to /api/testimonial, which writes a row to the Notion
   "Client References" database.
 -->
 <html lang="en" data-theme="dark">
@@ -28,53 +28,53 @@
   <style>
     /* Layout-only styles; colours come from the shared design tokens in styles.css.
        Field styling reuses the homepage callback form (.cb-*). */
-    .ref-wrap {
+    .tm-wrap {
       min-height: 100svh;
       display: grid; place-items: center;
       padding: clamp(28px, 6vw, 72px) var(--gutter);
     }
-    .ref-card {
+    .tm-card {
       width: 100%; max-width: 580px;
       background: var(--bg-2);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: clamp(24px, 5vw, 42px);
     }
-    .ref-brand { display: flex; width: fit-content; margin-bottom: 30px; }
-    .ref-eyebrow {
+    .tm-brand { display: flex; width: fit-content; margin-bottom: 30px; }
+    .tm-eyebrow {
       font-family: var(--font-mono);
       font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.12em;
       color: var(--fg-3);
       display: inline-flex; align-items: center; gap: 8px;
       margin-bottom: 14px;
     }
-    .ref-eyebrow-dot {
+    .tm-eyebrow-dot {
       width: 6px; height: 6px; border-radius: 999px; background: var(--accent);
     }
-    .ref-h {
+    .tm-h {
       font-size: clamp(28px, 5vw, 40px);
       font-weight: 500; letter-spacing: -0.025em; line-height: 1.08;
       margin: 0 0 12px;
     }
-    .ref-h em {
+    .tm-h em {
       font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400;
     }
-    .ref-p {
+    .tm-p {
       color: var(--fg-2); font-size: 15px; line-height: 1.55;
       margin: 0 0 28px; max-width: 46ch;
     }
 
-    .ref-form { gap: 18px; }
-    .ref-section {
+    .tm-form { gap: 18px; }
+    .tm-section {
       border: 0; margin: 0; padding: 0;
       display: flex; flex-direction: column; gap: 12px;
     }
-    .ref-legend {
+    .tm-legend {
       font-family: var(--font-mono);
       font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.1em;
       color: var(--fg-4); padding: 0; margin-bottom: 2px;
     }
-    .ref-divider { height: 1px; background: var(--line); border: 0; margin: 6px 0; }
+    .tm-divider { height: 1px; background: var(--line); border: 0; margin: 6px 0; }
     .cb-form select {
       width: 100%;
       font: inherit; font-size: 14.5px;
@@ -90,56 +90,56 @@
       border-color: var(--accent);
       box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
     }
-    .ref-count { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--fg-4); }
+    .tm-count { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--fg-4); }
 
     /* Star rating — real radios (keyboard + screen-reader friendly), drawn as stars. */
-    .ref-stars { display: flex; align-items: center; gap: 4px; }
-    .ref-star { position: relative; cursor: pointer; padding: 2px; border-radius: 8px; line-height: 0; }
-    .ref-star input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
-    .ref-star svg { width: 34px; height: 34px; display: block; transition: transform .15s; }
-    .ref-star path { fill: transparent; stroke: var(--fg-4); stroke-width: 1.4; transition: fill .15s, stroke .15s; }
-    .ref-star.is-on path { fill: var(--accent); stroke: var(--accent); }
-    .ref-star:hover svg { transform: scale(1.08); }
-    .ref-star:has(input:focus-visible) { box-shadow: 0 0 0 2px var(--accent); }
-    .ref-star-text { margin-left: 10px; font-size: 13px; color: var(--fg-3); min-width: 9ch; }
+    .tm-stars { display: flex; align-items: center; gap: 4px; }
+    .tm-star { position: relative; cursor: pointer; padding: 2px; border-radius: 8px; line-height: 0; }
+    .tm-star input { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+    .tm-star svg { width: 34px; height: 34px; display: block; transition: transform .15s; }
+    .tm-star path { fill: transparent; stroke: var(--fg-4); stroke-width: 1.4; transition: fill .15s, stroke .15s; }
+    .tm-star.is-on path { fill: var(--accent); stroke: var(--accent); }
+    .tm-star:hover svg { transform: scale(1.08); }
+    .tm-star:has(input:focus-visible) { box-shadow: 0 0 0 2px var(--accent); }
+    .tm-star-text { margin-left: 10px; font-size: 13px; color: var(--fg-3); min-width: 9ch; }
     /* Light mode: lime fill alone is faint on cream — outline it in ink. */
-    [data-theme="light"] .ref-star.is-on path { stroke: var(--fg); }
+    [data-theme="light"] .tm-star.is-on path { stroke: var(--fg); }
 
-    .ref-check {
+    .tm-check {
       display: flex; gap: 10px; align-items: flex-start;
       font-size: 13.5px; color: var(--fg-2); line-height: 1.5; cursor: pointer;
     }
-    .ref-check input {
+    .tm-check input {
       width: 16px; height: 16px; margin: 2px 0 0; flex: none;
       accent-color: var(--accent);
     }
 
-    .ref-foot {
+    .tm-foot {
       margin-top: 26px; font-size: 12.5px; color: var(--fg-4); line-height: 1.5;
     }
-    .ref-foot a { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 2px; }
-    .ref-done[hidden], .ref-form[hidden] { display: none; }
-    .ref-home { margin-top: 18px; }
+    .tm-foot a { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 2px; }
+    .tm-done[hidden], .tm-form[hidden] { display: none; }
+    .tm-home { margin-top: 18px; }
   </style>
 </head>
 <body>
-  <main class="ref-wrap">
-    <div class="ref-card">
-      <a href="/" class="brand ref-brand" aria-label="Vanta Studio home">
+  <main class="tm-wrap">
+    <div class="tm-card">
+      <a href="/" class="brand tm-brand" aria-label="Vanta Studio home">
         <span class="brand-mark"><span class="brand-mark-inner"></span></span>
         <span class="brand-name">Vanta<span style="opacity:.5">/</span>Studio</span>
       </a>
 
-      <div class="ref-eyebrow"><span class="ref-eyebrow-dot" aria-hidden="true"></span>Client reference</div>
-      <h1 class="ref-h">How did we <em>do</em>?</h1>
-      <p class="ref-p">Thanks for building with us. Two minutes of honest feedback helps us get better — and helps the next team decide whether we're the right fit.</p>
+      <div class="tm-eyebrow"><span class="tm-eyebrow-dot" aria-hidden="true"></span>Client testimonial</div>
+      <h1 class="tm-h">How did we <em>do</em>?</h1>
+      <p class="tm-p">Thanks for building with us. Two minutes of honest feedback helps us get better — and helps the next team decide whether we're the right fit.</p>
 
-      <form id="ref-form" class="cb-form ref-form" novalidate>
+      <form id="tm-form" class="cb-form tm-form" novalidate>
         <!-- Honeypot — visually hidden, off-screen; bots fill it, humans don't. -->
         <input type="text" name="company_url" class="cb-hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
-        <fieldset class="ref-section">
-          <legend class="ref-legend">The project</legend>
+        <fieldset class="tm-section">
+          <legend class="tm-legend">The project</legend>
           <label class="cb-field">
             <span class="cb-label">Project name</span>
             <input name="project" type="text" required maxlength="160" placeholder="e.g. Website redesign" />
@@ -156,32 +156,32 @@
             </label>
             <label class="cb-field">
               <span class="cb-label">Year</span>
-              <select name="year" id="ref-year"></select>
+              <select name="year" id="tm-year"></select>
             </label>
           </div>
         </fieldset>
 
-        <hr class="ref-divider" />
+        <hr class="tm-divider" />
 
-        <fieldset class="ref-section">
-          <legend class="ref-legend">Your experience</legend>
-          <div class="cb-field" role="radiogroup" aria-labelledby="ref-rating-label">
-            <span class="cb-label" id="ref-rating-label">Overall rating</span>
-            <div class="ref-stars" id="ref-stars">
+        <fieldset class="tm-section">
+          <legend class="tm-legend">Your experience</legend>
+          <div class="cb-field" role="radiogroup" aria-labelledby="tm-rating-label">
+            <span class="cb-label" id="tm-rating-label">Overall rating</span>
+            <div class="tm-stars" id="tm-stars">
               <!-- Stars injected by the script below (1–5). -->
             </div>
           </div>
           <label class="cb-field">
-            <span class="cb-label">What was it like working with us? <span class="ref-count" id="ref-count">0 / 1900</span></span>
+            <span class="cb-label">What was it like working with us? <span class="tm-count" id="tm-count">0 / 1900</span></span>
             <textarea name="experience" rows="5" required maxlength="1900"
               placeholder="What problem did we solve? How was the process? What changed after launch?"></textarea>
           </label>
         </fieldset>
 
-        <hr class="ref-divider" />
+        <hr class="tm-divider" />
 
-        <fieldset class="ref-section">
-          <legend class="ref-legend">About you</legend>
+        <fieldset class="tm-section">
+          <legend class="tm-legend">About you</legend>
           <label class="cb-field">
             <span class="cb-label">Your name</span>
             <input name="name" type="text" autocomplete="name" required maxlength="120" placeholder="Jane Doe" />
@@ -196,48 +196,48 @@
               <input name="company" type="text" autocomplete="organization" maxlength="160" placeholder="Acme Inc." />
             </label>
           </div>
-          <label class="ref-check">
+          <label class="tm-check">
             <input type="checkbox" name="can_quote" />
             <span>Vanta Studio may quote this publicly (website, proposals) with my name, role and company.</span>
           </label>
         </fieldset>
 
-        <p class="cb-error" id="ref-error" role="alert"></p>
-        <button type="submit" class="btn btn--accent btn--lg cb-submit" id="ref-submit">
-          <span id="ref-submit-label">Send reference</span>
+        <p class="cb-error" id="tm-error" role="alert"></p>
+        <button type="submit" class="btn btn--accent btn--lg cb-submit" id="tm-submit">
+          <span id="tm-submit-label">Send testimonial</span>
           <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <p class="cb-consent">Leave the box unticked and we'll keep this private, for our own reference only — POPIA-friendly.</p>
+        <p class="cb-consent">Leave the box unticked and we'll keep this private, for our own records only — POPIA-friendly.</p>
       </form>
 
-      <div class="cb-done ref-done" id="ref-done" role="status" hidden>
+      <div class="cb-done tm-done" id="tm-done" role="status" hidden>
         <span class="cb-done-check" style="background:var(--accent)" aria-hidden="true">
           <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="var(--on-accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
         </span>
         <div>
           <div class="cb-done-h">Thank you — that means a lot.</div>
-          <p class="cb-done-p">Your reference is with the studio. Want to add or change anything? Write to hello@vantalabs.co.</p>
-          <a href="/" class="btn btn--accent ref-home">
+          <p class="cb-done-p">Your testimonial is with the studio. Want to add or change anything? Write to hello@vantalabs.co.</p>
+          <a href="/" class="btn btn--accent tm-home">
             Back to Vanta Studio
             <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </a>
         </div>
       </div>
 
-      <p class="ref-foot">Questions? <a href="mailto:hello@vantalabs.co">hello@vantalabs.co</a> · <a href="/">Vanta Studio</a></p>
+      <p class="tm-foot">Questions? <a href="mailto:hello@vantalabs.co">hello@vantalabs.co</a> · <a href="/">Vanta Studio</a></p>
     </div>
   </main>
 
   <script>
     (function () {
-      var form = document.getElementById('ref-form');
-      var done = document.getElementById('ref-done');
-      var errEl = document.getElementById('ref-error');
-      var btn = document.getElementById('ref-submit');
-      var label = document.getElementById('ref-submit-label');
-      var yearSel = document.getElementById('ref-year');
-      var starsEl = document.getElementById('ref-stars');
-      var countEl = document.getElementById('ref-count');
+      var form = document.getElementById('tm-form');
+      var done = document.getElementById('tm-done');
+      var errEl = document.getElementById('tm-error');
+      var btn = document.getElementById('tm-submit');
+      var label = document.getElementById('tm-submit-label');
+      var yearSel = document.getElementById('tm-year');
+      var starsEl = document.getElementById('tm-stars');
+      var countEl = document.getElementById('tm-count');
       var submitting = false;
 
       // Year options — this year back to 2018.
@@ -253,18 +253,18 @@
       var STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" stroke-linejoin="round"/></svg>';
       for (var i = 1; i <= 5; i++) {
         var l = document.createElement('label');
-        l.className = 'ref-star';
+        l.className = 'tm-star';
         l.dataset.v = i;
         l.innerHTML = '<input type="radio" name="rating" value="' + i + '" aria-label="' + i + ' star' + (i > 1 ? 's' : '') + ' — ' + WORDS[i] + '" />' + STAR;
         starsEl.appendChild(l);
       }
       var starText = document.createElement('span');
-      starText.className = 'ref-star-text';
+      starText.className = 'tm-star-text';
       starText.setAttribute('aria-hidden', 'true');
       starsEl.appendChild(starText);
 
       function paint(n) {
-        starsEl.querySelectorAll('.ref-star').forEach(function (s) {
+        starsEl.querySelectorAll('.tm-star').forEach(function (s) {
           s.classList.toggle('is-on', Number(s.dataset.v) <= n);
         });
         starText.textContent = WORDS[n] || '';
@@ -278,7 +278,7 @@
       form.addEventListener('input', function () { errEl.textContent = ''; });
       form.addEventListener('change', function () { errEl.textContent = ''; });
       starsEl.addEventListener('mouseover', function (e) {
-        var s = e.target.closest('.ref-star');
+        var s = e.target.closest('.tm-star');
         if (s) paint(Number(s.dataset.v));
       });
       starsEl.addEventListener('mouseleave', function () { paint(current()); });
@@ -315,7 +315,7 @@
         label.textContent = 'Sending…';
 
         try {
-          var res = await fetch('/api/reference', {
+          var res = await fetch('/api/testimonial', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -339,7 +339,7 @@
           fail(err.message || 'Something went wrong. Please try again.');
           submitting = false;
           btn.disabled = false;
-          label.textContent = 'Send reference';
+          label.textContent = 'Send testimonial';
         }
       });
     })();

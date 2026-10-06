@@ -1,4 +1,4 @@
-# feat: Client reference form (shareable link)
+# feat: Client testimonial form (shareable link)
 
 **Date:** 2026-10-06
 **Type:** feat
@@ -8,8 +8,8 @@
 
 ## Summary
 
-A standalone, unlisted page at **`/references/`** that the studio sends by link to
-past clients so they can leave a reference: project name, when it happened, a 1–5
+A standalone, unlisted page at **`/testimonials/`** that the studio sends by link to
+past clients so they can leave a testimonial: project name, when it happened, a 1–5
 star rating, and a write-up of the experience. Submissions land in a Notion
 database, using the same pattern as the homepage "request a callback" form.
 
@@ -24,8 +24,8 @@ install, and it should look like Vanta Studio.
 
 | Piece | Notes |
 |---|---|
-| `references/index.html` | Single card, same design tokens/field styles as the callback form (`.cb-*`). Plain HTML + a small inline script — no React/Babel needed for one form. Root-absolute asset paths. `noindex, nofollow`. Works in dark and light themes, 375px → desktop. |
-| `api/reference.js` | Vercel function (ESM, like `callback.js`). Validates, honeypot, writes one Notion page. |
+| `testimonials/index.html` | Single card, same design tokens/field styles as the callback form (`.cb-*`). Plain HTML + a small inline script — no React/Babel needed for one form. Root-absolute asset paths. `noindex, nofollow`. Works in dark and light themes, 375px → desktop. |
+| `api/testimonial.js` | Vercel function (ESM, like `callback.js`). Validates, honeypot, writes one Notion page. |
 | Notion DB "Vanta Studio — Client References" | New database, shared with the existing integration. |
 
 **Fields**
@@ -36,7 +36,7 @@ install, and it should look like Vanta Studio.
 | When — month + year | Year ✅, month optional | Two selects rather than `<input type=month>` (no desktop Safari support). Stored as text, e.g. `Mar 2025`. |
 | Overall rating 1–5 ★ | ✅ | Real radio inputs drawn as stars → keyboard + screen-reader friendly. |
 | Experience | ✅ (≥10 chars, ≤1,900) | Notion caps a rich-text block at 2,000 chars. |
-| Name | ✅ | A reference with no name isn't usable as a reference. |
+| Name | ✅ | A testimonial with no name isn't usable as a testimonial. |
 | Role, Company | optional | Needed to attribute a public quote. |
 | "May quote publicly" | checkbox, **unticked by default** | Opt-in consent (POPIA). Untick = private, internal use only. |
 
@@ -44,7 +44,7 @@ install, and it should look like Vanta Studio.
 that's already about their project:
 
 ```
-https://<site>/references/?project=Aucor%20Property&when=2025
+https://<site>/testimonials/?project=Aucor%20Property&when=2025
 ```
 
 ## Setup (owner, one-time)
@@ -79,26 +79,26 @@ https://<site>/references/?project=Aucor%20Property&when=2025
   manual, deliberate step, which fits the "don't invent metrics" rule: only real,
   consented quotes go live.
 
-## v2 — homepage References section (this branch)
+## v2 — homepage Testimonials section (this branch)
 
 - **Thank-you state** gets a "Back to Vanta Studio" button.
 - **Publishing:** the owner added a `Publish` checkbox to the Notion database. A
-  reference appears on the homepage only when **`Can quote` and `Publish`** are
+  testimonial appears on the homepage only when **`Can quote` and `Publish`** are
   both ticked: the client's consent plus the studio's pick.
-- **`api/published-references.js`** (GET) queries Notion with that filter,
+- **`api/published-testimonials.js`** (GET) queries Notion with that filter,
   returns only display fields, and is edge-cached for 5 minutes. This replaces
   the earlier "hand-curated static array" idea: the Notion checkbox is the
   control, so no deploy is needed to publish.
-- **`references.jsx`** adds the `References` section (05) between Work and
+- **`testimonials.jsx`** adds the `Testimonials` section (05) between Work and
   Process, which puts proof straight after the case studies. Three layouts
   to play with from the Tweaks panel:
   - **Spotlight** (default): one large Instrument Serif quote, auto-advancing
     every 9s with a progress bar, a picker list and prev/next. Long quotes drop
     to body type so they stay readable.
-  - **Marquee:** endless scrolling card rows (two rows at 6+ references), pause
-    on hover. Below 3 references it falls back to Grid.
-  - **Grid:** masonry cards; long quotes clamp with "Read the full reference".
-- The section hides itself when nothing is published. `?refs=demo` previews it
+  - **Marquee:** endless scrolling card rows (two rows at 6+ testimonials), pause
+    on hover. Below 3 testimonials it falls back to Grid.
+  - **Grid:** masonry cards; long quotes clamp with "Read the full testimonial".
+- The section hides itself when nothing is published. `?testimonials=demo` previews it
   with labelled placeholder data.
 
 ## Still out of scope
@@ -118,13 +118,13 @@ https://<site>/references/?project=Aucor%20Property&when=2025
 - Headless Chromium at 1280px and 375px, dark and light: layout, star
   hover/select, client-side validation messages, `?project=&when=` prefill,
   success state (API mocked).
-- `api/reference.js` exercised with a mocked `fetch`: 405 on GET, rating and
+- `api/testimonial.js` exercised with a mocked `fetch`: 405 on GET, rating and
   length validation, honeypot short-circuit, and the exact Notion property
   payload.
 - v1 form verified on the Vercel preview against the real Notion database.
-- v2: all three layouts at 1280px and 375px in both themes (with `?refs=demo`),
-  a single-reference case, and the hidden-when-empty case. `published-references.js`
+- v2: all three layouts at 1280px and 375px in both themes (with `?testimonials=demo`),
+  a single-testimonial case, and the hidden-when-empty case. `published-testimonials.js`
   was exercised with a mocked `fetch`: the filter body, field mapping (no extra
   fields leak), dropping rows with no name, the cache header, and 405 on POST.
-  Not yet tested against the real database: that needs a reference with both
+  Not yet tested against the real database: that needs a testimonial with both
   boxes ticked.

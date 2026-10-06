@@ -1,14 +1,14 @@
-// Vercel serverless function — returns the client references that are cleared
-// for the homepage "References" section (CLAUDE.md §10).
+// Vercel serverless function — returns the client testimonials that are cleared
+// for the homepage "Testimonials" section (CLAUDE.md §10).
 //
-// GET /api/published-references → { references: [{ id, name, role, company, project, when, rating, quote }] }
+// GET /api/published-testimonials → { testimonials: [{ id, name, role, company, project, when, rating, quote }] }
 //
 // Only rows with BOTH checkboxes ticked are returned:
 //   Can quote — the client's own consent, set from the form.
 //   Publish   — the studio's editorial pick, ticked by hand in Notion.
 // Only display fields are sent to the browser; nothing else from the row.
 //
-// Env: NOTION_TOKEN, NOTION_REFERENCES_DATABASE_ID (same as api/reference.js).
+// Env: NOTION_TOKEN, NOTION_REFERENCES_DATABASE_ID (same as api/testimonial.js).
 // The response is cached at Vercel's edge for 5 minutes, so ticking or
 // unticking "Publish" shows up on the site within about 5 minutes.
 
@@ -61,7 +61,7 @@ export default async function handler(req, res) {
     }
 
     const data = await notionRes.json();
-    const references = (data.results || [])
+    const testimonials = (data.results || [])
       .map((page) => {
         const p = page.properties || {};
         const rating = p.Rating && typeof p.Rating.number === 'number' ? p.Rating.number : null;
@@ -79,9 +79,9 @@ export default async function handler(req, res) {
       .filter((r) => r.name && r.quote);
 
     res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
-    return res.status(200).json({ references });
+    return res.status(200).json({ testimonials });
   } catch (err) {
-    console.error('References handler failed', err);
+    console.error('Testimonials handler failed', err);
     return res.status(500).json({ error: 'Something went wrong' });
   }
 }
