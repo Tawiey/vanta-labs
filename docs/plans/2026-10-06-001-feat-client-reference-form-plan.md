@@ -79,20 +79,38 @@ https://<site>/references/?project=Aucor%20Property&when=2025
   manual, deliberate step, which fits the "don't invent metrics" rule: only real,
   consented quotes go live.
 
-## Out of scope / next steps
+## v2 — homepage References section (this branch)
 
-- **Show testimonials on the homepage** — a `Testimonials` section in
-  `sections.jsx`, fed by a hand-curated array (only `Can quote = true`,
-  `Status = Published`). Keep it static. Pulling from Notion at runtime isn't
-  worth it at this scale.
-- **Per-client signed links** — e.g. `?t=<HMAC(project)>` reusing the
+- **Thank-you state** gets a "Back to Vanta Studio" button.
+- **Publishing:** the owner added a `Publish` checkbox to the Notion database. A
+  reference appears on the homepage only when **`Can quote` and `Publish`** are
+  both ticked: the client's consent plus the studio's pick.
+- **`api/published-references.js`** (GET) queries Notion with that filter,
+  returns only display fields, and is edge-cached for 5 minutes. This replaces
+  the earlier "hand-curated static array" idea: the Notion checkbox is the
+  control, so no deploy is needed to publish.
+- **`references.jsx`** adds the `References` section (05) between Work and
+  Process, which puts proof straight after the case studies. Three layouts
+  to play with from the Tweaks panel:
+  - **Spotlight** (default): one large Instrument Serif quote, auto-advancing
+    every 9s with a progress bar, a picker list and prev/next. Long quotes drop
+    to body type so they stay readable.
+  - **Marquee:** endless scrolling card rows (two rows at 6+ references), pause
+    on hover. Below 3 references it falls back to Grid.
+  - **Grid:** masonry cards; long quotes clamp with "Read the full reference".
+- The section hides itself when nothing is published. `?refs=demo` previews it
+  with labelled placeholder data.
+
+## Still out of scope
+
+- **Per-client signed links**, e.g. `?t=<HMAC(project)>` reusing the
   `CASE_ACCESS_SECRET` pattern from the case-study gate, so only links you
   minted can submit. Worth it only if spam appears.
-- **Notify on submit** — Notion's own database automations (Slack/email) can
+- **Notify on submit:** Notion's own database automations (Slack/email) can
   handle this with no code.
-- **Photo / logo upload** — skipped; needs storage and raises brand-asset
-  questions (§7: no fake logos).
-- **Multiple ratings** (communication, quality, timeline) — easy to add later
+- **Photo / logo upload:** skipped. It needs storage and raises brand-asset
+  questions (§7: no fake logos). Avatars are initials for now.
+- **Multiple ratings** (communication, quality, timeline): easy to add later
   if one overall score proves too coarse.
 
 ## Verification done
@@ -103,5 +121,10 @@ https://<site>/references/?project=Aucor%20Property&when=2025
 - `api/reference.js` exercised with a mocked `fetch`: 405 on GET, rating and
   length validation, honeypot short-circuit, and the exact Notion property
   payload.
-- Not yet verified against a real Notion database: that needs the env var
-  and database from the setup steps above.
+- v1 form verified on the Vercel preview against the real Notion database.
+- v2: all three layouts at 1280px and 375px in both themes (with `?refs=demo`),
+  a single-reference case, and the hidden-when-empty case. `published-references.js`
+  was exercised with a mocked `fetch`: the filter body, field mapping (no extra
+  fields leak), dropping rows with no name, the cache header, and 405 on POST.
+  Not yet tested against the real database: that needs a reference with both
+  boxes ticked.

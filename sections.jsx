@@ -611,7 +611,7 @@ function Process({ accent }) {
     <section id="process" className="section section--process">
       <div className="container">
         <div className="section-head">
-          <Eyebrow num="05">How we work</Eyebrow>
+          <Eyebrow num="06">How we work</Eyebrow>
           <Reveal>
             <h2 className="h2">From "fuzzy idea" to live<br />in around 18 days.</h2>
           </Reveal>
@@ -676,7 +676,7 @@ function Offers({ accent }) {
       <div className="container">
         <div className="section-head section-head--row">
           <div>
-            <Eyebrow num="06">Ways to work with us</Eyebrow>
+            <Eyebrow num="07">Ways to work with us</Eyebrow>
             <Reveal>
               <h2 className="h2">Three engagements.<br />Pick the one that fits.</h2>
             </Reveal>
@@ -739,7 +739,7 @@ function Thinking() {
       <div className="container">
         <div className="section-head section-head--row">
           <div>
-            <Eyebrow num="07">Thinking</Eyebrow>
+            <Eyebrow num="08">Thinking</Eyebrow>
             <Reveal>
               <h2 className="h2">Notes from the studio.</h2>
             </Reveal>
@@ -882,7 +882,7 @@ function CTA({ accent }) {
           <div className="cta-grid" aria-hidden="true" />
           <div className="cta-inner">
             <Reveal>
-              <Eyebrow num="08">Let's build</Eyebrow>
+              <Eyebrow num="09">Let's build</Eyebrow>
             </Reveal>
             <Reveal delay={80}>
               <h2 className="cta-h">
