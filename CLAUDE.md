@@ -42,7 +42,7 @@ Africa, shipped worldwide"), Johannesburg / Cape Town, remote-global.
 - Modules don't use ES imports. Each `.jsx` file defines globals and publishes them
   with `Object.assign(window, { … })` at the bottom. **Load order matters** — see
   `index.html`:
-  `tweaks-panel.jsx` → `sections.jsx` → `work.jsx` → `app.jsx`. A symbol must be
+  `tweaks-panel.jsx` → `sections.jsx` → `work.jsx` → `testimonials.jsx` → `app.jsx`. A symbol must be
   defined by an earlier script before a later one uses it.
 - CDN `<script>` tags carry **SRI `integrity` hashes**. If you bump a React/Babel
   version, you must regenerate the matching hash or the page silently fails to boot.
@@ -69,10 +69,11 @@ python3 -m http.server 8000
 
 | Path | Role |
 |---|---|
-| `index.html` | Homepage shell; loads fonts, `styles.css`, React/Babel CDNs, the four root `.jsx` files. |
+| `index.html` | Homepage shell; loads fonts, `styles.css`, React/Babel CDNs, the five root `.jsx` files. |
 | `app.jsx` | Root `App` — composes the homepage sections, wires theme + accent + a dev "Tweaks" panel. Mounts to `#root`. |
 | `sections.jsx` | Homepage sections: `Nav`, `Hero`, `Insights`, `Services`, `Process`, `Offers`, `Thinking`, `CTA`, `Footer`, shared `Reveal`/`Tilt`/`Eyebrow`. |
 | `work.jsx` | `CASE_STUDIES` data (single source of truth), `CaseArt`, `ShotComposite`, `CaseHeroCard`, `CaseLabCard`, `Work` section, `LogoStrip`. |
+| `testimonials.jsx` | Homepage `Testimonials` section — fetches published client testimonials and renders the `spotlight` / `marquee` / `grid` layout (§10). |
 | `tweaks-panel.jsx` | Dev-only `useTweaks` hook + `TweaksPanel`/`TweakRadio`/`TweakColor`. Lets you flip theme/accent/hero variant live. `TWEAK_DEFAULTS` in `app.jsx` is the committed default. |
 | `styles.css` | **All** global styles + design tokens. Loaded by every page (root and `../styles.css` from cases). |
 | `cases/*.html` | Self-contained case-study detail pages (one per project). Each defines its own `ACCENT`, inline page components, and `Page`. |
@@ -82,6 +83,9 @@ python3 -m http.server 8000
 | `api/unlock.js` | **Vercel serverless function.** Verifies the shared case-study password and sets the signed access cookie. Env: `CASE_STUDY_PASSWORD`, `CASE_ACCESS_SECRET` (§9). |
 | `middleware.js` | **Vercel Routing (Edge) Middleware.** Gates the protected case studies — checks the access cookie, rewrites to `unlock.html` when missing/invalid (§9). Must be `.js`, not `.mjs` (§9). |
 | `unlock.html` | Password prompt page served in place of a protected case study (§9). |
+| `testimonials/index.html` | Unlisted client-testimonial form, shared by link (`/testimonials/?project=…&when=YYYY`). Plain HTML + inline script (§10). |
+| `api/testimonial.js` | **Vercel serverless function.** Saves a client testimonial to the Notion "Client References" database. Env: `NOTION_TOKEN`, `NOTION_REFERENCES_DATABASE_ID` (§10). |
+| `api/published-testimonials.js` | **Vercel serverless function.** `GET` — returns testimonials with both `Can quote` and `Publish` ticked, for the homepage section. Edge-cached 5 min (§10). |
 | `package.json` / `package-lock.json` | Server-only manifest declaring `@vercel/functions` for `middleware.js`; marks server code ESM (`"type":"module"`). No front-end build (§2/§9). |
 | `assets/work/` | Real screenshots used in case cards + case pages (see §6). |
 | `.context/` | Conductor scratch space (gitignored). Source attachments live here. |
@@ -143,7 +147,7 @@ carries a red `#e6483b`) — palette and page-accent are separate knobs.
 ## 5. Case-study system
 
 **Data:** `CASE_STUDIES` in `work.jsx` is the single source of truth, consumed by
-the homepage `Work` section and referenced by the detail pages. Entry shape:
+the homepage `Work` section and testimoniald by the detail pages. Entry shape:
 ```js
 {
   slug, name, cat, kind: 'CLIENT WORK' | 'IN-HOUSE' | 'LAB',
@@ -177,7 +181,7 @@ a "Next project" CTA. Use `Reveal`/`Eyebrow` and the `.cs-*` classes.
 
 ## 6. Real screenshots — the device composite
 
-Real site screenshots live in **`assets/work/`** (referenced as `assets/work/…`
+Real site screenshots live in **`assets/work/`** (testimoniald as `assets/work/…`
 from root, `../assets/work/…` from case pages).
 
 They're presented with a **device composite**: a browser frame around the desktop
@@ -322,3 +326,62 @@ Valid iff the signature verifies **and** `Date.now() < expMs`. Signed in Node
   not the image files.
 - Adding `package.json` must not introduce a build: keep it script-free so Vercel
   keeps treating the project as static-plus-functions (Framework Preset "Other").
+
+---
+
+## 10. Client testimonial form
+
+An **unlisted** page at **`/testimonials/`** (`testimonials/index.html`) that the
+owner sends to past clients to collect a testimonial: project name, when (month
+optional + year), a 1–5 star rating, the experience, name (+ optional role and
+company), and an opt-in "may quote publicly" checkbox (unticked by default, for
+POPIA). It is not linked from the nav and is `noindex`. There is no password
+because the link itself is the invitation. The honeypot (`company_url`) handles
+spam.
+
+- **Tailored links:** `?project=<name>&when=<YYYY>` prefill the form.
+- **Front end:** plain HTML + a small inline script, reusing the callback form's
+  `.cb-*` field styles from `styles.css`. Root-absolute asset paths.
+- **Back end:** `api/testimonial.js` (ESM, same shape as `callback.js`) creates a
+  page in the Notion database **"Vanta Studio — Client References"**:
+  `Name` (title), `Role`, `Company`, `Project`, `When` (text), `Rating`
+  (number), `Experience` (text, ≤1,900 chars), `Can quote` (checkbox),
+  `Status` (select, `New`), `Submitted` (created time). Env:
+  `NOTION_REFERENCES_DATABASE_ID` (+ the shared `NOTION_TOKEN`); the database
+  must be connected to the integration.
+- **Naming:** the feature was first built as "references" and renamed to
+  **testimonials** everywhere visible (URL, files, copy, `.tm-*` classes). Two
+  names deliberately keep the old wording, because they're live config: the
+  env var `NOTION_REFERENCES_DATABASE_ID` and the Notion database name. Don't
+  rename them unless you also change them in Vercel/Notion.
+- Like `/api/callback`, it 404s under `python -m http.server`. Use `vercel dev`
+  or a preview.
+- After submitting, the thank-you state has a **Back to Vanta Studio** button
+  (`/`), so the client isn't left at a dead end.
+
+### Showing testimonials on the homepage
+
+The `Testimonials` section (`testimonials.jsx`, numbered **05**, placed between
+Work and Process) shows testimonials from the same Notion database.
+
+- **Publishing = two checkboxes.** `api/published-testimonials.js` only returns
+  rows where **`Can quote`** (the client's consent, set by the form) **and**
+  **`Publish`** (the studio's pick, ticked by hand in Notion) are both ticked.
+  `Publish` alone is not enough: never publish a testimonial the client didn't
+  consent to.
+- Only display fields go to the browser (name, role, company, project, when,
+  rating, quote). The quote is shown **verbatim**. Never paraphrase or invent
+  testimonials (§7).
+- The response is edge-cached (`s-maxage=300`), so a change in Notion shows up
+  within about 5 minutes. No redeploy needed.
+- **No published rows, or the API isn't running → the section renders nothing.**
+  Under `python -m http.server`, use **`?testimonials=demo`** to preview the layouts
+  with clearly labelled placeholder cards. That placeholder copy must never
+  ship as real data.
+- **Layouts:** `TWEAK_DEFAULTS.testimonialsLayout` in `app.jsx` sets the committed one
+  (`spotlight` default; also `marquee`, `grid`). Switch live from the Tweaks
+  panel → Testimonials. Styles are the `.tm-*` block at the end of `styles.css`.
+  Marquee and spotlight auto-play, and both stop under `prefers-reduced-motion`.
+- The average-rating badge appears only with ≥3 rated testimonials, and it's
+  computed from the real ratings. Scope/next steps:
+  `docs/plans/2026-10-06-001-feat-client-testimonials-plan.md`.

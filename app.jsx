@@ -3,7 +3,8 @@
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "theme": "dark",
   "accent": "#d8ff3b",
-  "heroVariant": "terminal"
+  "heroVariant": "terminal",
+  "testimonialsLayout": "spotlight"
 }/*EDITMODE-END*/;
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <LogoStrip />
         <Services accent={t.accent} />
         <Work accent={t.accent} />
+        <Testimonials accent={t.accent} layout={t.testimonialsLayout} />
         <Process accent={t.accent} />
         <Offers accent={t.accent} />
         <Thinking />
@@ -74,6 +76,18 @@ function App() {
             { value: 'vanta', label: 'Vanta' },
           ]}
           onChange={(v) => setTweak('heroVariant', v)}
+        />
+
+        <TweakSection label="Testimonials" />
+        <TweakRadio
+          label="Layout"
+          value={t.testimonialsLayout}
+          options={[
+            { value: 'spotlight', label: 'Spotlight' },
+            { value: 'marquee', label: 'Marquee' },
+            { value: 'grid', label: 'Grid' },
+          ]}
+          onChange={(v) => setTweak('testimonialsLayout', v)}
         />
       </TweaksPanel>
     </>
