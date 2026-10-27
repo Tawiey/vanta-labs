@@ -125,7 +125,7 @@ function CaseNav({ accent }) {
           <a href="../index.html#work">Work</a>
           <a href="../index.html#services">Services</a>
           <a href="../index.html#process">Process</a>
-          <a href="../index.html#thinking">Thinking</a>
+          <a href="../index.html#faq">FAQs</a>
         </nav>
         <button onClick={toggleTheme} aria-label="Toggle theme" style={{
           width:36, height:36, borderRadius:'50%', border:'1px solid var(--line-2)',
@@ -169,23 +169,18 @@ function CaseFooter({ accent }) {
               <div className="mono dim foot-h">Studio</div>
               <a href="../index.html#work">Work</a>
               <a href="../index.html#process">Process</a>
-              <a href="../index.html#thinking">Thinking</a>
+              <a href="../index.html#faq">FAQs</a>
             </div>
             <div>
               <div className="mono dim foot-h">Engage</div>
-              <a href="../index.html#offers">Sprint Site</a>
-              <a href="../index.html#offers">Product Sprint</a>
-              <a href="../index.html#offers">Studio On-Call</a>
-            </div>
-            <div>
-              <div className="mono dim foot-h">Elsewhere</div>
-              <a href="#">X / Twitter</a>
-              <a href="#">Read.cv</a>
-              <a href="#">GitHub</a>
+              <a href="../index.html#offer-start">Start website</a>
+              <a href="../index.html#offer-business">Business website</a>
+              <a href="../index.html#offer-grow">Grow website</a>
             </div>
             <div>
               <div className="mono dim foot-h">Contact</div>
-              <a href="mailto:hello@vantalabs.co">hello@vantalabs.co</a>
+              <a href="mailto:hello@vantastudio.design">hello@vantastudio.design</a>
+              <a href="https://wa.me/27731602194" target="_blank" rel="noopener noreferrer">Chat on WhatsApp · +27 73 160 2194</a>
               <span>Johannesburg · Cape Town</span>
               <span>Remote, globally</span>
             </div>

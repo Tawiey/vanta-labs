@@ -3,11 +3,11 @@
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "theme": "dark",
   "accent": "#d8ff3b",
-  "heroVariant": "terminal",
   "testimonialsLayout": "spotlight"
 }/*EDITMODE-END*/;
 
 function App() {
+  const [audience, setAudience] = React.useState('businesses');
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
 
   React.useEffect(() => {
@@ -20,20 +20,18 @@ function App() {
 
   return (
     <>
-      <Nav accent={t.accent} theme={t.theme} onToggleTheme={() => setTweak('theme', t.theme === 'dark' ? 'light' : 'dark')} />
+      <Nav audience={audience} accent={t.accent} theme={t.theme} onToggleTheme={() => setTweak('theme', t.theme === 'dark' ? 'light' : 'dark')} />
       <main>
-        <Hero accent={t.accent} variant={t.heroVariant} />
-        <Insights accent={t.accent} />
-        <LogoStrip />
-        <Services accent={t.accent} />
+        <Hero accent={t.accent} audience={audience} onAudienceChange={setAudience} />
+        <Services audience={audience} accent={t.accent} />
         <Work accent={t.accent} />
         <Testimonials accent={t.accent} layout={t.testimonialsLayout} />
-        <Process accent={t.accent} />
-        <Offers accent={t.accent} />
-        <Thinking />
-        <CTA accent={t.accent} />
+        <Process audience={audience} accent={t.accent} />
+        <Offers audience={audience} accent={t.accent} />
+        <FAQ audience={audience} />
+        <CTA audience={audience} accent={t.accent} />
       </main>
-      <Footer accent={t.accent} />
+      <Footer audience={audience} accent={t.accent} />
 
       <TweaksPanel title="Vanta · Tweaks">
         <TweakSection label="Theme" />
@@ -65,18 +63,6 @@ function App() {
             />
           ))}
         </div>
-
-        <TweakSection label="Hero" />
-        <TweakRadio
-          label="Visual"
-          value={t.heroVariant}
-          options={[
-            { value: 'orbit', label: 'Orbit' },
-            { value: 'terminal', label: 'Terminal' },
-            { value: 'vanta', label: 'Vanta' },
-          ]}
-          onChange={(v) => setTweak('heroVariant', v)}
-        />
 
         <TweakSection label="Testimonials" />
         <TweakRadio

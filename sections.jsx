@@ -103,7 +103,7 @@ function Eyebrow({ children, num }) {
 // ─────────────────────────────────────────────────────────────────────────
 // NAV
 // ─────────────────────────────────────────────────────────────────────────
-function Nav({ accent, theme, onToggleTheme }) {
+function Nav({ accent, theme, onToggleTheme, audience }) {
   const [scrolled, setScrolled] = useState(false);
   const dark = theme !== 'light';
   useEffect(() => {
@@ -122,7 +122,8 @@ function Nav({ accent, theme, onToggleTheme }) {
           <a href="#work">Work</a>
           <a href="#services">Services</a>
           <a href="#process">Process</a>
-          <a href="#thinking">Thinking</a>
+          <a href="#offers">{audience === 'agencies' ? 'Work with us' : 'Website packages'}</a>
+          <a href="#faq">FAQs</a>
         </nav>
         <button onClick={onToggleTheme} aria-label="Toggle theme" style={{
           width:36, height:36, borderRadius:'50%', border:'1px solid var(--line-2)',
@@ -152,519 +153,101 @@ function Nav({ accent, theme, onToggleTheme }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// HERO — three variants
+// HERO — text-led opening and scroll-linked website reveal
 // ─────────────────────────────────────────────────────────────────────────
 
-// Variant A: orbiting grid with cursor-aware highlight
-function HeroOrbit({ accent }) {
-  const ref = useRef(null);
-  const [pos, setPos] = useState({ x: 0.5, y: 0.5 });
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const move = (e) => {
-      const r = el.getBoundingClientRect();
-      setPos({ x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height });
-    };
-    el.addEventListener('mousemove', move);
-    return () => el.removeEventListener('mousemove', move);
-  }, []);
+function Hero({ accent, audience, onAudienceChange }) {
+  const agency = audience === 'agencies';
+  return <section id="top" className="hero">
+    <div className="container audience-row">
+      <div className="audience-switch" role="group" aria-label="Who is the website for?">
+        <button type="button" aria-pressed={!agency} onClick={() => onAudienceChange('businesses')}>For businesses</button>
+        <button type="button" aria-pressed={agency} onClick={() => onAudienceChange('agencies')}>For agencies</button>
+      </div>
 
-  return (
-    <div className="hero-visual hero-visual--orbit" ref={ref}>
-      <div
-        className="hero-grid"
-        style={{
-          ['--mx']: `${pos.x * 100}%`,
-          ['--my']: `${pos.y * 100}%`,
-          ['--accent']: accent,
-        }}
-      />
-      <div className="hero-rings" style={{ ['--accent']: accent }}>
-        <span className="hero-ring hero-ring--1" />
-        <span className="hero-ring hero-ring--2" />
-        <span className="hero-ring hero-ring--3" />
-        <span className="hero-core" />
-        <span className="hero-orbit-dot hero-orbit-dot--a" />
-        <span className="hero-orbit-dot hero-orbit-dot--b" />
-        <span className="hero-orbit-dot hero-orbit-dot--c" />
-      </div>
-      <div className="hero-coords">
-        <span>LAT 26.2041° S</span>
-        <span>LNG 28.0473° E</span>
-        <span>JHB · CPT · REMOTE</span>
-      </div>
     </div>
-  );
-}
-
-// Variant B: animated terminal "shipping" log
-function HeroTerminal({ accent }) {
-  const lines = [
-    { t: 'init', s: 'vanta init "fintech onboarding"', tone: 'cmd' },
-    { t: '01', s: '◇ research · 4 user interviews synthesized', tone: 'ok' },
-    { t: '02', s: '◇ wireframes · 12 screens, 3 flows', tone: 'ok' },
-    { t: '03', s: '◇ ui · figma → tokens → tailwind', tone: 'ok' },
-    { t: '04', s: '◇ build · next.js, postgres, stripe', tone: 'ok' },
-    { t: '05', s: '◆ shipped in 18 days', tone: 'accent' },
-    { t: '→', s: 'conversion +37% · activation +52%', tone: 'dim' },
-  ];
-  const [n, setN] = useState(0);
-  useEffect(() => {
-    if (n >= lines.length) {
-      const r = setTimeout(() => setN(0), 3200);
-      return () => clearTimeout(r);
-    }
-    const t = setTimeout(() => setN((v) => v + 1), n === 0 ? 600 : 520);
-    return () => clearTimeout(t);
-  }, [n]);
-
-  return (
-    <div className="hero-visual hero-visual--term" style={{ ['--accent']: accent }}>
-      <div className="term">
-        <div className="term-bar">
-          <span className="term-dot" />
-          <span className="term-dot" />
-          <span className="term-dot" />
-          <span className="term-title">~/vanta · ship.log</span>
+    <div className="hero-inner">
+      <div className="hero-text">
+        <Eyebrow>{agency ? 'White-label website design & build' : 'Website design & build · South Africa'}</Eyebrow>
+        <h1 className="display">{agency ? <>Your next website project.<br /><span className="hero-value">An extra pair of hands.</span></> : <>A website that makes your business <span className="hero-value">look the part.</span></>}</h1>
+        <p className="lede">{agency ? 'We design and build websites for your clients, under your brand. You lead the client relationship. We help you get the work done.' : 'Help customers see what you do, trust your business and get in touch. We write the words, design your website and get it online.'}</p>
+        <div className="hero-cta">
+          <a href={agency ? '#contact' : '#offers'} className="btn btn--accent btn--lg">{agency ? 'Talk about a project' : 'See website packages'}</a>
+          <a href="#work" className="btn btn--ghost btn--lg">See our work</a>
         </div>
-        <div className="term-body">
-          {lines.slice(0, n).map((l, i) => (
-            <div key={i} className={'term-line term-line--' + l.tone}>
-              <span className="term-t">{l.t}</span>
-              <span className="term-s">{l.s}</span>
-            </div>
-          ))}
-          {n < lines.length && <span className="term-cursor" />}
-        </div>
+        <p className="hero-promise">{agency ? 'Design, build or both. Scope and price agreed before work starts.' : <>One-page websites from R4 500. Four-page Business website: <strong style={{whiteSpace: 'nowrap'}}>R8 500.</strong></>}</p>
       </div>
+
     </div>
-  );
+    <WebsiteReveal audience={audience} />
+  </section>;
 }
 
-// Variant C: black square (vanta) that animates light through it
-function HeroVanta({ accent }) {
-  const ref = useRef(null);
-  const [hover, setHover] = useState(false);
-  return (
-    <div
-      className="hero-visual hero-visual--vanta"
-      ref={ref}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{ ['--accent']: accent }}
-    >
-      <div className={'vanta-cube ' + (hover ? 'is-lit' : '')}>
-        <div className="vanta-face vanta-face--front" />
-        <div className="vanta-face vanta-face--top" />
-        <div className="vanta-face vanta-face--side" />
-        <div className="vanta-glow" />
-        <div className="vanta-scan" />
-      </div>
-      <div className="vanta-caption">
-        <span className="mono dim">// the darker the canvas,</span>
-        <br />
-        <span className="mono">the brighter the work.</span>
-      </div>
-    </div>
-  );
-}
-
-function Hero({ accent, variant }) {
-  return (
-    <section id="top" className="hero">
-      <div className="hero-inner">
-        <div className="hero-text">
-          <Reveal delay={40}>
-            <Eyebrow num="01">Studio · est. 2024 · made in Africa</Eyebrow>
-          </Reveal>
-          <Reveal delay={120}>
-            <h1 className="display">
-              We build websites <span className="display-em">that out-ship</span> your roadmap<span className="display-accent-dot" style={{ color: 'var(--accent)' }}>.</span>
-            </h1>
-          </Reveal>
-          <Reveal delay={220}>
-            <p className="lede">
-              Vanta Studio is a small team of product thinkers, designers and engineers.
-              We turn fuzzy ideas into premium, conversion-ready products — in weeks,
-              not quarters. AI in the loop, taste at the wheel.
-            </p>
-          </Reveal>
-          <Reveal delay={320}>
-            <div className="hero-cta">
-              <a href="#contact" className="btn btn--accent btn--lg" style={{ ['--accent']: accent }}>
-                Start a project
-                <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                  <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
-              <a href="#work" className="btn btn--ghost btn--lg">See selected work</a>
-            </div>
-          </Reveal>
-          <Reveal delay={420}>
-            <div className="hero-meta">
-              <div>
-                <div className="mono dim">AVG. SHIP TIME</div>
-                <div className="meta-num">18 <span className="meta-unit">days</span></div>
-              </div>
-              <div>
-                <div className="mono dim">CLIENTS '24–'26</div>
-                <div className="meta-num">42</div>
-              </div>
-              <div>
-                <div className="mono dim">AVG. CONV. LIFT</div>
-                <div className="meta-num">+34<span className="meta-unit">%</span></div>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-        <Reveal delay={200} className="hero-visual-wrap">
-          {variant === 'orbit' && <HeroOrbit accent={accent} />}
-          {variant === 'terminal' && <HeroTerminal accent={accent} />}
-          {variant === 'vanta' && <HeroVanta accent={accent} />}
-        </Reveal>
-      </div>
-      <div className="hero-marquee" aria-hidden="true">
-        <div className="marquee-track">
-          {Array.from({ length: 2 }).map((_, k) => (
-            <div className="marquee-row" key={k}>
-              {['Stripe-grade polish', 'Linear-fast iteration', 'Apple-level taste', 'Notion-level clarity', 'Vercel-fast performance', 'Figma-tight design', 'Stripe-grade polish', 'Linear-fast iteration'].map((t, i) => (
-                <span key={i} className="marquee-item">
-                  <span className="marquee-dot" style={{ background: accent }} />
-                  {t}
-                </span>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-// INSIGHTS / CREDIBILITY
-// ─────────────────────────────────────────────────────────────────────────
-function Insights({ accent }) {
-  const stats = [
-    { k: '70%', l: 'of B2B sites lose users in the first 5 seconds', src: 'NN/g, 2024' },
-    { k: '6×', l: 'longer to ship a "real" site than founders estimate', src: 'Vanta intake data' },
-    { k: '0.4s', l: 'every extra page-load second drops conversions ~7%', src: 'Akamai' },
-    { k: '$0', l: 'value of a beautiful site nobody can find or use', src: '— obviously' },
+function Services({ audience }) {
+  const agency = audience === 'agencies';
+  const items = agency ? [
+    ['Design help', 'Turn your client’s brief into a clear, polished website design.'],
+    ['Website builds', 'Bring an approved design to life, on desktop and phone.'],
+    ['Content your client can edit', 'Add a content management system when the project needs it.'],
+    ['Work under your brand', 'Agree on the scope, review points and handover with your team.'],
+  ] : [
+    ['Tell your story clearly', 'We write the words from your answers. No blank page to face.'],
+    ['Give customers confidence', 'Show your services, your work and the reviews you already have.'],
+    ['Make it easy to get in touch', 'Clear call and WhatsApp links help customers take the next step.'],
+    ['Get the setup sorted', 'Your domain, hosting and business email, together in one package.'],
   ];
-  return (
-    <section className="section section--insights">
-      <div className="container">
-        <div className="section-head">
-          <Eyebrow num="02">The honest part</Eyebrow>
-          <Reveal>
-            <h2 className="h2">
-              Most websites are quietly losing<br />
-              the deal before the pitch starts.
-            </h2>
-          </Reveal>
-        </div>
-        <div className="stats-grid">
-          {stats.map((s, i) => (
-            <Reveal key={i} delay={i * 80}>
-              <div className="stat">
-                <div className="stat-k" style={{ color: accent }}>{s.k}</div>
-                <div className="stat-l">{s.l}</div>
-                <div className="mono dim stat-src">{s.src}</div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  return <section id="services" className="section"><div className="container">
+    <div className="section-head section-head--row"><div><Eyebrow>How we help</Eyebrow><h2 className="h2">{agency ? <>More capacity.<br />Less to juggle.</> : <>You run your business.<br />We’ll handle the website.</>}</h2></div><p className="section-sub">{agency ? 'Bring us in for the part you need help with. You’ll work directly with Tawanda.' : 'You don’t need to know how websites work. Tell us about your business. We’ll take it from there.'}</p></div>
+    <div className="svc-grid">{items.map(([title, body], i) => <article className="svc" key={title}><div className="mono dim">0{i+1}</div><h3 className="svc-t">{title}</h3><p className="svc-d">{body}</p></article>)}</div>
+  </div></section>;
 }
 
-// ─────────────────────────────────────────────────────────────────────────
-// SERVICES — "What we do"
-// ─────────────────────────────────────────────────────────────────────────
-function Services({ accent }) {
-  const items = [
-    {
-      n: '01',
-      t: 'Product thinking',
-      d: 'We start with the business — the metric you need moved, the user you need to win — then design backwards from there.',
-      tags: ['Discovery', 'Strategy', 'Positioning'],
-    },
-    {
-      n: '02',
-      t: 'UI / UX design',
-      d: 'High-fidelity, system-driven design that looks like the brand you wish you had — and survives contact with engineering.',
-      tags: ['UX', 'UI', 'Design systems'],
-    },
-    {
-      n: '03',
-      t: 'Modern engineering',
-      d: 'Next.js, TypeScript, Postgres, edge — built for real-world performance, SEO and Core Web Vitals, not just screenshots.',
-      tags: ['Web', 'Web apps', 'CMS'],
-    },
-    {
-      n: '04',
-      t: 'AI-assisted velocity',
-      d: 'We use AI in the loop — research, copy, code — to compress weeks into days. You get the speed; we keep the taste.',
-      tags: ['Prototyping', 'Automation', 'Copy'],
-    },
+function Process({ audience }) {
+  const agency = audience === 'agencies';
+  const steps = agency ? [
+    ['Share the brief', 'Tell us what your client needs, what’s ready and where you need help.'],
+    ['Agree on the work', 'We set the scope, price, review points and timeline together.'],
+    ['Review with your team', 'We design and build the agreed work. You guide the client feedback.'],
+    ['Hand over', 'We check the site and hand over the agreed files, access and next steps.'],
+  ] : [
+    ['Tell us about your business', 'Answer a short intake about your services, customers and goals. Send your logo, photos and any reviews you want to use.'],
+    ['Book your project', 'Agree on your pages and scope, then pay a 50% deposit. We write the copy from your answers.'],
+    ['See your first version', 'For the Business package, your first version is ready within five business days of your cleared deposit. Give us your feedback in two revision rounds.'],
+    ['Go live', 'Once you approve the website, pay the balance before launch. We connect your domain and get your site online.'],
   ];
-  return (
-    <section id="services" className="section section--services">
-      <div className="container">
-        <div className="section-head section-head--row">
-          <div>
-            <Eyebrow num="03">What we do</Eyebrow>
-            <Reveal>
-              <h2 className="h2">Four disciplines.<br />One small, sharp team.</h2>
-            </Reveal>
-          </div>
-          <Reveal delay={120}>
-            <p className="section-sub">
-              No account managers, no slide-deck theatre. You talk to the people doing
-              the work — usually before lunch.
-            </p>
-          </Reveal>
-        </div>
-        <div className="svc-grid">
-          {items.map((it, i) => (
-            <Reveal key={it.n} delay={i * 60}>
-              <div className="svc">
-                <div className="svc-head">
-                  <span className="mono dim">{it.n}</span>
-                  <span className="svc-arrow" style={{ color: accent }}>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M4 12L12 4M12 4H6M12 4V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
-                </div>
-                <h3 className="svc-t">{it.t}</h3>
-                <p className="svc-d">{it.d}</p>
-                <div className="svc-tags">
-                  {it.tags.map((t) => <span key={t} className="tag">{t}</span>)}
-                </div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  return <section id="process" className="section"><div className="container">
+    <div className="section-head"><Eyebrow>How it works</Eyebrow><h2 className="h2">{agency ? 'A clear plan from brief to handover.' : 'A few simple steps to your new website.'}</h2></div>
+    <ol className="simple-process">{steps.map(([title,body], i) => <li key={title}><span className="mono dim">0{i+1}</span><h3>{title}</h3><p>{body}</p></li>)}</ol>
+  </div></section>;
 }
 
-// ─────────────────────────────────────────────────────────────────────────
-// WORK — asymmetric grid
-// ─────────────────────────────────────────────────────────────────────────
-function WorkCard({ p, span, accent }) {
-  return (
-    <Tilt max={4} className={'work-card ' + (span ? 'work-card--wide' : '')}>
-      <div className="work-card-inner">
-        <div className="work-thumb" style={{ background: p.bg }}>
-          <div className="work-thumb-grid" />
-          <div className="work-thumb-tag mono">{p.kind}</div>
-          <div className="work-thumb-art" aria-hidden="true">
-            {p.art}
-          </div>
-        </div>
-        <div className="work-meta">
-          <div className="work-meta-l">
-            <div className="work-name">{p.name}</div>
-            <div className="mono dim work-cat">{p.cat}</div>
-          </div>
-          <div className="work-meta-r">
-            <span className="work-stat" style={{ color: accent }}>{p.stat}</span>
-            <span className="mono dim">{p.statL}</span>
-          </div>
-        </div>
-      </div>
-    </Tilt>
-  );
-}
+function Offers({ accent, audience }) {
+  if (audience === 'agencies') return <section id="offers" className="section"><div className="container agency-offer">
+    <Eyebrow>For agencies</Eyebrow><h2 className="h2">Your brief.<br />A price for the work.</h2>
+    <p className="lede">Need a designer, a developer or someone to handle both? Send us the brief. We’ll agree on the work and cost before we start.</p>
+    <a className="btn btn--accent btn--lg" href="https://wa.me/27731602194?text=Hi%20Tawanda%2C%20I%27d%20like%20to%20discuss%20a%20white-label%20website%20project." target="_blank" rel="noopener noreferrer">Discuss white-label work ↗</a>
+  </div></section>;
 
-function Work({ accent }) {
-  const projects = [
-    {
-      name: 'Kola Pay',
-      cat: 'Fintech · Onboarding flow',
-      kind: 'WEB APP',
-      stat: '+52%',
-      statL: 'activation',
-      bg: 'linear-gradient(135deg, #14110e 0%, #221d17 100%)',
-      art: (
-        <div className="art-stack">
-          <div className="art-card art-card--1" />
-          <div className="art-card art-card--2" />
-          <div className="art-card art-card--3" />
-        </div>
-      ),
-    },
-    {
-      name: 'Hectare',
-      cat: 'Agritech · Marketing site',
-      kind: 'WEBSITE',
-      stat: '14d',
-      statL: 'idea → live',
-      bg: 'linear-gradient(140deg, #0e1411 0%, #1a221c 100%)',
-      art: (
-        <div className="art-globe">
-          <div className="art-globe-ring" />
-          <div className="art-globe-ring art-globe-ring--2" />
-          <div className="art-globe-dot" />
-        </div>
-      ),
-    },
-    {
-      name: 'Quill OS',
-      cat: 'AI writing tool · Brand & web',
-      kind: 'PRODUCT',
-      stat: '4.8★',
-      statL: 'PH launch',
-      bg: 'linear-gradient(150deg, #14110e 0%, #1f1814 100%)',
-      art: (
-        <div className="art-doc">
-          <div className="art-doc-line" style={{ width: '70%' }} />
-          <div className="art-doc-line" style={{ width: '90%' }} />
-          <div className="art-doc-line" style={{ width: '55%' }} />
-          <div className="art-doc-line art-doc-line--accent" style={{ width: '40%' }} />
-        </div>
-      ),
-    },
-    {
-      name: 'North Coast',
-      cat: 'D2C apparel · Storefront',
-      kind: 'E-COMMERCE',
-      stat: '+38%',
-      statL: 'AOV',
-      bg: 'linear-gradient(135deg, #11110e 0%, #1d1d18 100%)',
-      art: (
-        <div className="art-tag">
-          <div className="art-tag-row" />
-          <div className="art-tag-row art-tag-row--2" />
-          <div className="art-tag-px" />
-        </div>
-      ),
-    },
-    {
-      name: 'Mosaic Health',
-      cat: 'Healthtech · Patient portal',
-      kind: 'WEB APP',
-      stat: '−61%',
-      statL: 'support tickets',
-      bg: 'linear-gradient(140deg, #0e1213 0%, #181f20 100%)',
-      art: (
-        <div className="art-pulse">
-          <svg viewBox="0 0 200 60" preserveAspectRatio="none" width="100%" height="100%">
-            <path d="M0,30 L40,30 L50,12 L62,48 L74,18 L86,42 L98,30 L200,30" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-        </div>
-      ),
-    },
-  ];
-
-  return (
-    <section id="work" className="section section--work">
-      <div className="container">
-        <div className="section-head section-head--row">
-          <div>
-            <Eyebrow num="04">Selected work</Eyebrow>
-            <Reveal>
-              <h2 className="h2">Outcomes, not just<br />pretty screenshots.</h2>
-            </Reveal>
-          </div>
-          <Reveal delay={120}>
-            <a href="#contact" className="link-arrow">
-              View the full archive
-              <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
-                <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </a>
-          </Reveal>
-        </div>
-        <div className="work-grid">
-          <Reveal className="work-cell work-cell--a"><WorkCard p={projects[0]} accent={accent} span /></Reveal>
-          <Reveal delay={80} className="work-cell work-cell--b"><WorkCard p={projects[1]} accent={accent} /></Reveal>
-          <Reveal delay={120} className="work-cell work-cell--c"><WorkCard p={projects[2]} accent={accent} /></Reveal>
-          <Reveal delay={160} className="work-cell work-cell--d"><WorkCard p={projects[3]} accent={accent} /></Reveal>
-          <Reveal delay={200} className="work-cell work-cell--e"><WorkCard p={projects[4]} accent={accent} span /></Reveal>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-// PROCESS
-// ─────────────────────────────────────────────────────────────────────────
-function Process({ accent }) {
-  const steps = [
-    { n: '01', d: 'Day 0', t: 'Intake', b: 'A 30-minute call. We ask the awkward questions. You leave with a one-page brief.' },
-    { n: '02', d: 'Day 1–3', t: 'Shape', b: 'Sitemap, content outline, design tokens. We agree on the bet before pixels move.' },
-    { n: '03', d: 'Day 4–10', t: 'Design', b: 'Hi-fi screens in Figma, plus a clickable prototype. Tight loop, daily Looms.' },
-    { n: '04', d: 'Day 11–17', t: 'Build', b: 'Production code from day one. Next.js, type-safe, content-managed, observable.' },
-    { n: '05', d: 'Day 18+', t: 'Ship & evolve', b: 'Launch, measure, iterate. Optional retainer for ongoing growth and care.' },
-  ];
-  return (
-    <section id="process" className="section section--process">
-      <div className="container">
-        <div className="section-head">
-          <Eyebrow num="06">How we work</Eyebrow>
-          <Reveal>
-            <h2 className="h2">From "fuzzy idea" to live<br />in around 18 days.</h2>
-          </Reveal>
-        </div>
-        <ol className="process">
-          {steps.map((s, i) => (
-            <Reveal key={s.n} delay={i * 70}>
-              <li className="proc">
-                <div className="proc-rail">
-                  <span className="proc-num mono">{s.n}</span>
-                  <span className="proc-line" style={{ background: i === steps.length - 1 ? 'transparent' : 'var(--line)' }} />
-                </div>
-                <div className="proc-body">
-                  <div className="proc-day mono dim">{s.d}</div>
-                  <h3 className="proc-t">
-                    {s.t}
-                    {i === steps.length - 1 && <span className="proc-dot" style={{ background: accent }} />}
-                  </h3>
-                  <p className="proc-b">{s.b}</p>
-                </div>
-              </li>
-            </Reveal>
-          ))}
-        </ol>
-      </div>
-    </section>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-// OFFERS — pricing-style cards (no $$ — engagement types)
-// ─────────────────────────────────────────────────────────────────────────
-function Offers({ accent }) {
   const offers = [
     {
-      t: 'Sprint Site',
-      d: 'A premium marketing site, end-to-end.',
-      time: '2–3 weeks',
-      lines: ['Up to 8 unique pages', 'Design system + tokens', 'CMS-ready', 'Analytics & SEO baseline'],
-      cta: 'Most teams start here',
+      t: 'Start',
+      price: 'R4 500',
+      d: 'A focused page to introduce yourself, your work or your business.',
+      lines: ['One page, up to six sections', 'Copy written from your answers', 'One business email account', 'WhatsApp and call links'],
       featured: false,
     },
     {
-      t: 'Product Sprint',
-      d: 'A production MVP your team can keep building on.',
-      time: '4–6 weeks',
-      lines: ['Discovery + product strategy', 'UX, UI & design system', 'Full-stack build (Next.js + DB)', 'Auth, payments, dashboards'],
-      cta: 'Idea → real product',
+      t: 'Business',
+      price: 'R8 500',
+      d: 'A clear home for your services, your story and your next enquiry.',
+      lines: ['Four agreed pages', 'Copy written from your answers', 'Three business email accounts', 'WhatsApp, call links and an enquiry form', 'Two rounds of changes'],
       featured: true,
     },
     {
-      t: 'Studio On-Call',
-      d: 'A senior pod, on retainer, in your Slack.',
-      time: 'Monthly',
-      lines: ['Designer + engineer pod', 'Async + 2 weekly syncs', 'Roadmap + experimentation', 'Cancel any time'],
-      cta: 'Ongoing partner',
+      t: 'Grow',
+      price: 'R19 000',
+      d: 'A website with content you can keep up to date yourself.',
+      lines: ['Up to six pages', 'Copy written from your answers', 'Three business email accounts', 'Edit two agreed types of content yourself', 'Up to ten content entries added for you', 'A handover session'],
       featured: false,
     },
   ];
@@ -673,32 +256,32 @@ function Offers({ accent }) {
       <div className="container">
         <div className="section-head section-head--row">
           <div>
-            <Eyebrow num="07">Ways to work with us</Eyebrow>
+            <Eyebrow>Website packages</Eyebrow>
             <Reveal>
-              <h2 className="h2">Three engagements.<br />Pick the one that fits.</h2>
+              <h2 className="h2">Your business, online.<br />One clear price.</h2>
             </Reveal>
           </div>
           <Reveal delay={120}>
             <p className="section-sub">
-              Fixed scope, fixed price, fixed dates. The boring stuff is boring on
-              purpose — so the work can be exciting.
+              Choose the website that fits what you need today. We write the copy
+              from your answers, design it and build it for you.
             </p>
           </Reveal>
         </div>
         <div className="offers-grid">
           {offers.map((o, i) => (
             <Reveal key={o.t} delay={i * 80}>
-              <div className={'offer ' + (o.featured ? 'offer--featured' : '')} style={{ ['--accent']: accent }}>
-                {o.featured && <div className="offer-flag mono">Most picked</div>}
+              <article className={'offer ' + (o.featured ? 'offer--featured' : '')} style={{ ['--accent']: accent }} aria-labelledby={'offer-' + o.t.toLowerCase()}>
+                {o.featured && <div className="offer-flag mono">Recommended</div>}
                 <div className="offer-head">
-                  <h3 className="offer-t">{o.t}</h3>
-                  <div className="mono dim offer-time">{o.time}</div>
+                  <h3 className="offer-t" id={'offer-' + o.t.toLowerCase()}>{o.t}</h3>
                 </div>
+                <p className="offer-price">{o.price}<span className="mono dim">once-off</span></p>
                 <p className="offer-d">{o.d}</p>
                 <ul className="offer-list">
                   {o.lines.map((l) => (
                     <li key={l}>
-                      <span className="offer-tick" style={{ color: o.featured ? accent : 'var(--fg-2)' }}>
+                      <span className="offer-tick" style={{ color: o.featured ? 'var(--accent-ink)' : 'var(--fg-2)' }}>
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                           <path d="M2.5 6.5L5 9L9.5 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
@@ -707,15 +290,20 @@ function Offers({ accent }) {
                     </li>
                   ))}
                 </ul>
-                <a href="#contact" className={'offer-cta ' + (o.featured ? 'offer-cta--accent' : '')}>
-                  {o.cta}
+                <a href={'https://wa.me/27731602194?text=' + encodeURIComponent("Hi Tawanda, I'm interested in the " + o.t + ' website package (' + o.price + ').')} target="_blank" rel="noopener noreferrer" aria-label={'Chat on WhatsApp about the ' + o.t + ' website package'} className={'offer-cta ' + (o.featured ? 'offer-cta--accent' : '')}>
+                  Chat about {o.t}
                   <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                     <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </a>
-              </div>
+              </article>
             </Reveal>
           ))}
+        </div>
+        <div className="offers-details">
+          <p>All packages include mobile-friendly layouts, first-year hosting and domain registration up to R300. Renewal fees apply after year one. Prices are the total initial package cost; no VAT is added.</p>
+          <p><strong>Business: a first version in five business days after your deposit.</strong> Complete the intake before paying the 50% deposit. Review your first version, then use your two rounds of changes. The balance is payable before launch.</p>
+          <p>Online shops, booking systems, quoting and invoicing setup, and custom integrations are scoped separately. Any content system or platform licence fees are listed in your written scope.</p>
         </div>
       </div>
     </section>
@@ -725,53 +313,21 @@ function Offers({ accent }) {
 // ─────────────────────────────────────────────────────────────────────────
 // THINKING (insights/blog)
 // ─────────────────────────────────────────────────────────────────────────
-function Thinking() {
-  const posts = [
-    { tag: 'Essay', t: 'Taste is a moat — and AI just lowered the wall around it.', d: '6 min read · Apr 2026' },
-    { tag: 'Field note', t: 'How we cut a 9-week site build into 14 days (without cutting corners).', d: '4 min read · Mar 2026' },
-    { tag: 'Playbook', t: 'A Core Web Vitals checklist that survives the Lighthouse hangover.', d: '8 min read · Feb 2026' },
+function FAQ({ audience }) {
+  const agency = audience === 'agencies';
+  const questions = agency ? [
+    ['Can you work under our brand?', 'Yes. White-label work is the main agency service. We agree on communication and handover before we start.'],
+    ['Can you build a design we already have?', 'Yes. Share the design and brief so we can check the work and give you a price.'],
+    ['How much does it cost?', 'Agency projects are priced to the brief. We agree on the scope, price and timing before work starts.'],
+  ] : [
+    ['Do I need to write the website copy?', 'No. We write it from your intake answers. You check it for accuracy before launch.'],
+    ['What is included in R8 500?', 'Four agreed pages, copywriting, three business email accounts, mobile-friendly design, WhatsApp and call links, an enquiry form and two revision rounds. First-year hosting and domain registration up to R300 are included. No VAT is added.'],
+    ['Will my website be live in five days?', 'The Business package’s first version is ready within five business days of your cleared deposit. Complete your intake before paying. Launch follows your feedback, approval and final payment.'],
+    ['What happens after the first year?', 'Hosting, email and domain renewal fees apply after the included year. We confirm these costs with you before you commit to the project.'],
+    ['Can I change the pages?', 'Yes. Agree on the four pages you need before work starts. Home, About, Services and Contact are a useful starting point.'],
+    ['What if I need a shop or booking system?', 'We price online shops, booking systems, quoting and invoicing setup separately. Tell us what you need and we’ll include it in your written scope.'],
   ];
-  return (
-    <section id="thinking" className="section section--thinking">
-      <div className="container">
-        <div className="section-head section-head--row">
-          <div>
-            <Eyebrow num="08">Thinking</Eyebrow>
-            <Reveal>
-              <h2 className="h2">Notes from the studio.</h2>
-            </Reveal>
-          </div>
-          <Reveal delay={120}>
-            <a href="#" className="link-arrow">
-              All writing
-              <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
-                <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </a>
-          </Reveal>
-        </div>
-        <div className="think-grid">
-          {posts.map((p, i) => (
-            <Reveal key={p.t} delay={i * 80}>
-              <a href="#" className="think">
-                <div className="think-head">
-                  <span className="tag">{p.tag}</span>
-                  <span className="mono dim">{p.d}</span>
-                </div>
-                <h3 className="think-t">{p.t}</h3>
-                <span className="think-arrow">
-                  Read
-                  <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
-                    <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </span>
-              </a>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  return <section id="faq" className="section"><div className="container faq-layout"><div><Eyebrow>Good questions</Eyebrow><h2 className="h2">Before you<br />get started.</h2></div><div>{questions.map(([q,a]) => <details className="faq-item" key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></div></section>;
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -812,7 +368,7 @@ function CallbackForm({ accent }) {
         </span>
         <div>
           <div className="cb-done-h">Got it — we'll call you back.</div>
-          <p className="cb-done-p">Expect a call within one business day. In a hurry? Book a slot above, or email hello@vantalabs.co.</p>
+          <p className="cb-done-p">Expect a call within one business day. In a hurry? Book a slot above, or email hello@vantastudio.design.</p>
         </div>
       </div>
     );
@@ -844,7 +400,7 @@ function CallbackForm({ accent }) {
           value={values.phone} onChange={onChange} placeholder="+27 …" />
       </label>
       <label className="cb-field">
-        <span className="cb-label">What are you building? <span className="cb-opt">optional</span></span>
+        <span className="cb-label">What does your business need? <span className="cb-opt">optional</span></span>
         <textarea name="note" rows="2"
           value={values.note} onChange={onChange} placeholder="A sentence is plenty." />
       </label>
@@ -871,7 +427,7 @@ function openBookingFallback() {
   }
 }
 
-function CTA({ accent }) {
+function CTA({ accent, audience }) {
   return (
     <section id="contact" className="section section--cta">
       <div className="container">
@@ -879,23 +435,21 @@ function CTA({ accent }) {
           <div className="cta-grid" aria-hidden="true" />
           <div className="cta-inner">
             <Reveal>
-              <Eyebrow num="09">Let's build</Eyebrow>
+              <Eyebrow>Let's build</Eyebrow>
             </Reveal>
             <Reveal delay={80}>
               <h2 className="cta-h">
-                You bring the ambition.<br />
-                We'll bring the <span className="cta-accent-em" style={{ color: accent }}>ship date</span>.
+                {audience === 'agencies' ? 'Let’s talk about your next client project.' : 'Ready for a website you’re proud to share?'}
               </h2>
             </Reveal>
             <Reveal delay={180}>
               <p className="cta-sub">
-                A 30-minute discovery call. Honest scope, honest timeline.
-                We pick up two new projects a month.
+                Talk to Tawanda about what you need. We’ll help you find the right next step.
               </p>
             </Reveal>
             <div className="cta-paths">
               <Reveal delay={240} className="cta-path">
-                <div className="mono dim cta-path-tag">Option A — fastest</div>
+                <div className="mono dim cta-path-tag">Let’s talk</div>
                 <h3 className="cta-path-h">Book a discovery call</h3>
                 <p className="cta-path-p">Pick a time that suits you. 30 minutes over video, straight onto your calendar.</p>
                 <button
@@ -912,13 +466,13 @@ function CTA({ accent }) {
                 </button>
               </Reveal>
               <Reveal delay={320} className="cta-path">
-                <div className="mono dim cta-path-tag">Option B — we'll call you</div>
+                <div className="mono dim cta-path-tag">Leave your details</div>
                 <h3 className="cta-path-h">Prefer a callback?</h3>
                 <CallbackForm accent={accent} />
               </Reveal>
             </div>
             <Reveal delay={400}>
-              <p className="cta-mail-line">Old-school? <a href="mailto:hello@vantalabs.co">hello@vantalabs.co</a></p>
+              <p className="cta-mail-line"><a href="https://wa.me/27731602194" target="_blank" rel="noopener noreferrer">Chat on WhatsApp · +27 73 160 2194</a><br />Or email <a href="mailto:hello@vantastudio.design">hello@vantastudio.design</a></p>
             </Reveal>
           </div>
         </div>
@@ -930,7 +484,7 @@ function CTA({ accent }) {
 // ─────────────────────────────────────────────────────────────────────────
 // FOOTER
 // ─────────────────────────────────────────────────────────────────────────
-function Footer({ accent }) {
+function Footer({ accent, audience }) {
   return (
     <footer className="footer">
       <div className="container">
@@ -943,23 +497,17 @@ function Footer({ accent }) {
               <div className="mono dim foot-h">Studio</div>
               <a href="#work">Work</a>
               <a href="#process">Process</a>
-              <a href="#thinking">Thinking</a>
+              <a href="#faq">FAQs</a>
             </div>
             <div>
               <div className="mono dim foot-h">Engage</div>
-              <a href="#offers">Sprint Site</a>
-              <a href="#offers">Product Sprint</a>
-              <a href="#offers">Studio On-Call</a>
-            </div>
-            <div>
-              <div className="mono dim foot-h">Elsewhere</div>
-              <a href="#">X / Twitter</a>
-              <a href="#">Read.cv</a>
-              <a href="#">GitHub</a>
+              <a href="#offers">{audience === 'agencies' ? 'White-label websites' : 'Website packages'}</a>
+              <a href="#contact">Talk to Tawanda</a>
             </div>
             <div>
               <div className="mono dim foot-h">Contact</div>
-              <a href="mailto:hello@vantalabs.co">hello@vantalabs.co</a>
+              <a href="mailto:hello@vantastudio.design">hello@vantastudio.design</a>
+              <a href="https://wa.me/27731602194" target="_blank" rel="noopener noreferrer">Chat on WhatsApp · +27 73 160 2194</a>
               <span>Johannesburg · Cape Town</span>
               <span>Remote, globally</span>
             </div>
@@ -980,5 +528,5 @@ function Footer({ accent }) {
 
 Object.assign(window, {
   Reveal, Tilt, Eyebrow,
-  Nav, Hero, Insights, Services, Work, Process, Offers, Thinking, CTA, Footer,
+  Nav, Hero, Services, Process, Offers, FAQ, CTA, Footer,
 });
