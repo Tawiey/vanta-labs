@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="/styles.css?v=3" />
+  <link rel="stylesheet" href="/styles.css?v=5" />
 
   <style>
     /* Layout-only styles; colours come from the shared design tokens in styles.css. */
@@ -34,7 +34,7 @@
       border-radius: var(--radius);
       padding: clamp(26px, 5vw, 38px);
     }
-    .unlock-brand { margin-bottom: 26px; }
+    .unlock-brand { display: flex; width: max-content; margin-bottom: 26px; }
     .unlock-eyebrow {
       font-family: var(--font-mono);
       font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.12em;
@@ -85,8 +85,7 @@
   <main class="unlock-wrap">
     <div class="unlock-card">
       <a href="/" class="brand unlock-brand" aria-label="Vanta Studio home">
-        <span class="brand-mark"><span class="brand-mark-inner"></span></span>
-        <span class="brand-name">Vanta<span style="opacity:.5">/</span>Studio</span>
+        <span class="brand-wordmark" aria-hidden="true"></span>
       </a>
 
       <div class="unlock-eyebrow">

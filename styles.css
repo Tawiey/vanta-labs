@@ -165,34 +165,22 @@ button { font: inherit; }
   margin: 0 auto;
   padding: 14px var(--gutter);
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
-  gap: 24px;
+  gap: 12px;
 }
-.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 500; }
-.brand-mark {
-  width: 22px; height: 22px;
-  border-radius: 6px;
-  background: #000;
-  border: 1px solid var(--line-2);
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
+.brand { display: inline-flex; align-items: center; min-height: 44px; color: var(--fg); }
+.brand-wordmark {
+  display: block;
+  width: 120px;
+  aspect-ratio: 1271 / 432;
+  flex-shrink: 0;
+  background: var(--fg);
+  /* Frame the artwork inside the approved PNG's transparent margins. */
+  -webkit-mask: url('/assets/brand/vanta-studio-wordmark-b.png') 48.06% 58.22% / 170.89% 167.59% no-repeat;
+  mask: url('/assets/brand/vanta-studio-wordmark-b.png') 48.06% 58.22% / 170.89% 167.59% no-repeat;
 }
-.brand-mark::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(circle at 30% 30%, color-mix(in oklab, var(--accent) 65%, transparent), transparent 60%);
-  opacity: 0.9;
-}
-.brand-mark-inner {
-  position: absolute; left: 50%; top: 50%;
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--accent);
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 12px var(--accent);
-}
-.brand-name { font-size: 14px; letter-spacing: -0.01em; }
+.footer-brand .brand-wordmark { width: 160px; }
 
 .nav-links {
   display: flex; gap: 26px;
@@ -212,7 +200,13 @@ button { font: inherit; }
 
 @media (max-width: 760px) {
   .nav-links { display: none; }
-  .nav-inner { grid-template-columns: 1fr auto; }
+  .nav-inner { grid-template-columns: 1fr auto auto; }
+}
+@media (max-width: 380px) {
+  .nav-inner { gap: 8px; }
+  .nav-inner .brand-wordmark { width: 100px; }
+  .nav-inner .btn { padding-inline: 12px; font-size: 12px; }
+  .nav-inner .btn svg { display: none; }
 }
 
 /* ─────────── Display type ─────────── */

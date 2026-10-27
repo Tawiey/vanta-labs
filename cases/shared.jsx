@@ -117,10 +117,9 @@ function CaseNav({ accent }) {
   };
   return (
     <header className={'nav ' + (scrolled ? 'nav--scrolled' : '')}>
-      <div className="nav-inner" style={{ gridTemplateColumns:'auto 1fr auto auto', gap:'12px' }}>
+      <div className="nav-inner">
         <a href="../index.html" className="brand" aria-label="Vanta Studio home">
-          <span className="brand-mark"><span className="brand-mark-inner" /></span>
-          <span className="brand-name">Vanta<span style={{ opacity: 0.5 }}>/</span>Studio</span>
+          <span className="brand-wordmark" aria-hidden="true" />
         </a>
         <nav className="nav-links" aria-label="Primary">
           <a href="../index.html#work">Work</a>
@@ -162,9 +161,8 @@ function CaseFooter({ accent }) {
     <footer className="footer">
       <div className="container">
         <div className="footer-top">
-          <div className="footer-brand">
-            <span className="brand-mark"><span className="brand-mark-inner" /></span>
-            <span className="brand-name">Vanta<span style={{ opacity: 0.5 }}>/</span>Studio</span>
+          <div className="footer-brand" role="img" aria-label="Vanta Studio">
+            <span className="brand-wordmark" aria-hidden="true" />
           </div>
           <div className="footer-cols">
             <div>
