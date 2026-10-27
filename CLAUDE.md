@@ -4,6 +4,10 @@ Context for AI agents working on this repository. Read this first.
 
 ---
 
+## Current homepage direction (27 October 2026)
+
+Business website customers are the default audience. A Businesses / Agencies switch in `app.jsx` changes the hero, services, process, offers, FAQs and contact heading; the agency path is white-label work. Use plain benefit-led copy. `work.jsx` now exports `WEBSITE_PROJECTS`, `ProjectPreview`, `WebsiteReveal` and `Work`, using three supplied recent website examples in `assets/work/recent/`. The former terminal variants, synthetic metrics, lab grid, employer strip and placeholder articles are removed from the homepage. Older descriptions below are historical where they conflict with this direction. The lead Aucor screen rotates upright with scroll and is static under reduced motion. Public contact details are now `hello@vantastudio.design` and WhatsApp `+27 73 160 2194`; Cal.com identifiers stay unchanged. Protected case-page access and middleware remain unchanged.
+
 ## 1. What this site is
 
 **Vanta Studio** is a small product/design/engineering studio. This repo is its

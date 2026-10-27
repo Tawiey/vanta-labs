@@ -53,7 +53,7 @@ export default async function handler(req, res) {
   const secret = process.env.CASE_ACCESS_SECRET;
   if (!password || !secret) {
     console.error('Missing CASE_STUDY_PASSWORD or CASE_ACCESS_SECRET env var');
-    return res.status(500).json({ error: 'Access is not configured yet. Please email hello@vantalabs.co.' });
+    return res.status(500).json({ error: 'Access is not configured yet. Please email hello@vantastudio.design.' });
   }
 
   // Vercel parses JSON bodies automatically, but guard against string bodies too.

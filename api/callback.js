@@ -29,7 +29,7 @@ export default async function handler(req, res) {
   const databaseId = process.env.NOTION_DATABASE_ID;
   if (!token || !databaseId) {
     console.error('Missing NOTION_TOKEN or NOTION_DATABASE_ID env var');
-    return res.status(500).json({ error: 'Server is not configured. Please email hello@vantalabs.co.' });
+    return res.status(500).json({ error: 'Server is not configured. Please email hello@vantastudio.design.' });
   }
 
   // Vercel parses JSON bodies automatically, but guard against string bodies too.
@@ -78,12 +78,12 @@ export default async function handler(req, res) {
     if (!notionRes.ok) {
       const detail = await notionRes.text();
       console.error('Notion API error', notionRes.status, detail);
-      return res.status(502).json({ error: "Couldn't save that. Please email hello@vantalabs.co." });
+      return res.status(502).json({ error: "Couldn't save that. Please email hello@vantastudio.design." });
     }
 
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error('Callback handler failed', err);
-    return res.status(500).json({ error: 'Something went wrong. Please email hello@vantalabs.co.' });
+    return res.status(500).json({ error: 'Something went wrong. Please email hello@vantastudio.design.' });
   }
 };
