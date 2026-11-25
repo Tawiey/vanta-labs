@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <link rel="icon" href="/favicon.ico?v=1" sizes="any" />
+  <link rel="icon" href="/assets/brand/favicon.svg?v=1" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png?v=1" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>TrailBrew | Vanta Studio Case Study</title>
+  <meta name="description" content="How a mountain biking community became an iOS app: designed and built solo with an AI workflow, tested with real riders and shaped over four rounds of feedback." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles.css?v=10" />
+  <link rel="stylesheet" href="case-study.css" />
+  <style>
+    :root { --accent: #ff8a3d; --accent-ink: #ff8a3d; }
+    [data-theme="light"] { --accent-ink: #b4501a; }
+    [data-theme="dark"] .cs-stat-v { color: var(--accent); }
+    .tb-phones { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin: 32px 0 48px; }
+    .tb-phone { display: flex; flex-direction: column; gap: 12px; }
+    .tb-phone-frame { aspect-ratio: 9 / 19.5; border-radius: 28px; border: 6px solid #25282d; background: #17191c; overflow: hidden; box-shadow: 0 16px 40px #0004; }
+    .tb-phone-frame img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+    .tb-phone-frame--empty { display: grid; place-items: center; text-align: center; border-style: dashed; border-color: var(--line-2); background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px), var(--bg-2); }
+    .tb-phone-frame--empty span { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-3); padding: 0 16px; line-height: 1.6; }
+    .tb-phone-cap { font-size: 13px; color: var(--fg-2); line-height: 1.4; }
+    .tb-phone-cap strong { display: block; color: var(--fg); font-weight: 500; margin-bottom: 2px; }
+    .cs-hero-art.tb-hero-art { aspect-ratio: auto; display: grid; place-items: center; padding: 40px 24px; background: radial-gradient(60% 50% at 50% 40%, rgba(255,138,61,.14), transparent 70%), var(--bg-2); }
+    .tb-hero-phone { width: min(260px, 70%); }
+    @media (max-width: 900px) { .tb-phones { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script type="text/babel" src="shared.jsx?v=2"></script>
+  <script type="text/babel">
+    const ACCENT = '#ff8a3d';
+    const { useState, useEffect } = React;
+
+    const NEXT = { name: 'Vanta Studio (this site)', cat: 'Self-published · Brand & marketing', href: 'Vanta Studio.html' };
+
+    // Screens captured from the iOS simulator. A missing file shows a labelled
+    // empty frame instead of a broken image, so the page never ships fake art.
+    const SCREENS = [
+      { file: 'garage', t: 'Your garage', b: 'Each bike, its mileage and when the next service is due.' },
+      { file: 'service', t: 'Service tracker', b: 'Log a service and see what needs attention before a ride.' },
+      { file: 'rides', t: 'Group rides', b: 'Post a ride or find one to join from the community.' },
+      { file: 'trails', t: 'Trail discovery', b: 'Find trails to ride, near home or on a trip.' },
+    ];
+
+    function PhoneShot({ file, label }) {
+      const [missing, setMissing] = useState(false);
+      if (missing) {
+        return <div className="tb-phone-frame tb-phone-frame--empty"><span>{label} screen coming soon</span></div>;
+      }
+      return (
+        <div className="tb-phone-frame">
+          <img src={'../assets/work/trailbrew/' + file + '.png'} alt={'TrailBrew ' + label + ' screen'} loading="lazy" onError={() => setMissing(true)} />
+        </div>
+      );
+    }
+
+    function Page() {
+      useEffect(() => {
+        document.documentElement.style.setProperty('--accent', ACCENT);
+      }, []);
+      return (
+        <>
+          <CaseNav accent={ACCENT} />
+          <main>
+            <section className="cs-hero">
+              <div className="container">
+                <Reveal>
+                  <a href="../index.html#work" className="cs-back">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path d="M9 11L5 7l4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    All work
+                  </a>
+                </Reveal>
+                <Reveal delay={40}>
+                  <div className="cs-chips">
+                    <span className="cs-chip"><span className="cs-chip-dot" style={{ background: ACCENT, color: ACCENT }} />In-house product</span>
+                    <span className="cs-chip">2026</span>
+                    <span className="cs-chip">iOS app · Mountain biking</span>
+                    <span className="cs-chip" style={{ borderColor: `${ACCENT}50`, color: ACCENT }}>Beta on TestFlight</span>
+                  </div>
+                </Reveal>
+                <div className="cs-hero-grid">
+                  <div>
+                    <Reveal delay={80}>
+                      <h1 className="display">
+                        From a riding crew to an app{' '}
+                        <span className="display-em">riders actually use.</span>
+                      </h1>
+                    </Reveal>
+                    <Reveal delay={160}>
+                      <p className="lede">
+                        TrailBrew started as a mountain biking community that grew out of
+                        the Trails with Tawanda channel. The riders kept running into the same
+                        problems: forgetting when their bike was due for a service and finding
+                        people and trails to ride with. So we designed and built an iOS app for them.
+                      </p>
+                    </Reveal>
+                    <Reveal delay={220}>
+                      <div className="cs-services">
+                        {['Product design', 'UX & UI', 'AI-assisted build', 'SwiftUI', 'User testing'].map(s => (
+                          <span key={s} className="tag">{s}</span>
+                        ))}
+                      </div>
+                    </Reveal>
+                  </div>
+                  <Reveal delay={120} className="cs-hero-art tb-hero-art">
+                    <div className="tb-hero-phone"><PhoneShot file="garage" label="Garage" /></div>
+                  </Reveal>
+                </div>
+              </div>
+            </section>
+
+            <section className="cs-section">
+              <div className="container">
+                <Eyebrow num="01">The brief</Eyebrow>
+                <div className="cs-2col">
+                  <div>
+                    <Reveal>
+                      <h2 className="h2">The community already knew what it needed.</h2>
+                    </Reveal>
+                    <ol className="cs-steps">
+                      {[
+                        { t: 'Where it started', b: 'Riders found us through riding videos and joined a WhatsApp community to ride together. The conversations there kept surfacing the same gaps in the tools they used.' },
+                        { t: 'The problems', b: 'Service intervals lived in people’s heads or not at all. Ride plans and trail tips got lost in group chats. Nothing brought the bike, the ride and the trail together.' },
+                        { t: 'The constraint', b: 'One designer, evenings and weekends, no engineering team. The only way to ship was to design and build the product with an AI-assisted workflow.' },
+                      ].map((s, i) => (
+                        <Reveal key={i} delay={i * 70} as="li" className="cs-step">
+                          <span className="cs-step-n mono">0{i + 1}</span>
+                          <div>
+                            <h3 className="cs-step-t">{s.t}</h3>
+                            <p className="cs-step-b">{s.b}</p>
+                          </div>
+                        </Reveal>
+                      ))}
+                    </ol>
+                  </div>
+                  <Reveal delay={120}>
+                    <p className="lede">
+                      Instead of guessing, we started with the people who would use it. A
+                      subgroup of the community became the beta group, and a short screen
+                      recording of the first build was enough to get riders asking to try it.
+                    </p>
+                    <p className="lede" style={{ marginTop: 16 }}>
+                      From there the app moved in short loops: put a version in riders&rsquo;
+                      hands through TestFlight, listen to what tripped them up, and ship the
+                      next version. The same approach sits at the heart of how we work with
+                      clients today: get something real in front of people early.
+                    </p>
+                  </Reveal>
+                </div>
+              </div>
+            </section>
+
+            <section className="cs-section">
+              <div className="container">
+                <div className="cs-section-head">
+                  <Eyebrow num="02">What we built</Eyebrow>
+                  <Reveal>
+                    <h2 className="h2">The bike, the ride and the trail in one app.</h2>
+                  </Reveal>
+                </div>
+                <Reveal delay={60}>
+                  <div className="tb-phones">
+                    {SCREENS.map(s => (
+                      <div className="tb-phone" key={s.file}>
+                        <PhoneShot file={s.file} label={s.t} />
+                        <div className="tb-phone-cap"><strong>{s.t}</strong>{s.b}</div>
+                      </div>
+                    ))}
+                  </div>
+                </Reveal>
+                <div className="cs-approach-grid">
+                  {[
+                    { n: '01', t: 'Design to code, one person', b: 'Every screen was designed and then built in SwiftUI with AI coding tools, so the design decisions made it into the product intact.' },
+                    { n: '02', t: 'Built for real conditions', b: 'Riders use the app before and after rides, so data is stored on the phone and syncs through iCloud when there is signal.' },
+                    { n: '03', t: 'Shaped by feedback', b: 'Four versions so far, each one shaped by what beta riders said and did. A redesign based on the latest round is under way.' },
+                  ].map((a, i) => (
+                    <Reveal key={i} delay={i * 80} className="cs-approach-item">
+                      <div className="cs-approach-n">{a.n}</div>
+                      <h3 className="cs-approach-t">{a.t}</h3>
+                      <p className="cs-approach-b">{a.b}</p>
+                    </Reveal>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <section className="cs-section">
+              <div className="container">
+                <Eyebrow num="03">Outcomes</Eyebrow>
+                <Reveal>
+                  <h2 className="h2">Proof that AI lets a small team<br />ship a real product, fast.</h2>
+                </Reveal>
+                <div className="cs-stats">
+                  {[
+                    { v: '4', l: 'Versions shipped to beta riders, each shaped by their feedback' },
+                    { v: '1', l: 'Designer taking the product from first sketch to working iOS app' },
+                    { v: 'iOS', l: 'Native SwiftUI app in beta on TestFlight' },
+                  ].map((s, i) => (
+                    <Reveal key={i} delay={i * 80} className="cs-stat">
+                      <div className="cs-stat-v">{s.v}</div>
+                      <div className="cs-stat-l">{s.l}</div>
+                    </Reveal>
+                  ))}
+                </div>
+                <Reveal delay={120}>
+                  <p className="cs-closing">
+                    TrailBrew is where we sharpen the workflow behind the Product Blueprint:
+                    lifelike, working prototypes built with AI in days, tested with real people,
+                    and improved in short loops. Your developers get the same speed, without the guesswork.
+                  </p>
+                </Reveal>
+              </div>
+            </section>
+
+            <div className="cs-next">
+              <div className="container">
+                <div className="cs-next-inner">
+                  <div>
+                    <div className="mono dim cs-next-label">Next project</div>
+                    <div className="cs-next-name">{NEXT.name}</div>
+                    <div className="cs-next-cat mono dim">{NEXT.cat}</div>
+                  </div>
+                  <a href={NEXT.href} className="btn btn--accent btn--lg" style={{ ['--accent']: ACCENT }}>
+                    View case study
+                    <svg width="14" height="14" viewBox="0 0 12 12" fill="none">
+                      <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </main>
+          <CaseFooter accent={ACCENT} />
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<Page />);
+  </script>
+</body>
+</html>
