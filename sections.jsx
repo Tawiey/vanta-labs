@@ -165,9 +165,9 @@ function Hero({ accent }) {
         <p className="lede">We design digital products for dev houses and product teams. An AI-powered workflow gets your developers a lifelike prototype in days, not months, so questions are answered before anyone writes production code.</p>
         <div className="hero-cta">
           <a href="#contact" className="btn btn--accent btn--lg">Book a discovery call</a>
-          <a href="#process" className="btn btn--ghost btn--lg">See the Vanta Five</a>
+          <a href="#process" className="btn btn--ghost btn--lg">See the Product Blueprint</a>
         </div>
-        <p className="hero-promise">Design only, done properly. The Vanta Five from <strong style={{whiteSpace: 'nowrap'}}>R60 000.</strong></p>
+        <p className="hero-promise">Design only, done properly. The Product Blueprint from <strong style={{whiteSpace: 'nowrap'}}>R60 000.</strong></p>
       </div>
 
     </div>
@@ -197,14 +197,14 @@ function Process() {
     ['Final design and handover', 'Up to three rounds of iteration, the final Figma design and annotated screens.', 'A build-ready handover pack.'],
   ];
   return <section id="process" className="section"><div className="container">
-    <div className="section-head"><Eyebrow>The Vanta Five</Eyebrow><h2 className="h2">Five steps from brief to build-ready.</h2></div>
+    <div className="section-head"><Eyebrow>The Product Blueprint</Eyebrow><h2 className="h2">Five steps from brief to build-ready.</h2></div>
     <ol className="simple-process simple-process--five">{steps.map(([title, body, out], i) => <li key={title}><span className="mono dim">0{i+1}</span><h3>{title}</h3><p>{body}</p><p className="process-out"><strong>You get:</strong> {out}</p></li>)}</ol>
   </div></section>;
 }
 
 function Offers({ accent }) {
   const pkg = {
-    t: 'The Vanta Five',
+    t: 'The Product Blueprint',
     price: 'From R60 000',
     d: 'One fixed scope and price for a new product, feature or redesign.',
     lines: ['Discovery brief and research focus areas', 'Wireframes, user flows and an agreed direction', 'A clickable prototype in one week', 'Up to three rounds of design iteration', 'Final Figma design with annotations', 'A handover pack for your developers'],
@@ -214,7 +214,7 @@ function Offers({ accent }) {
     d: 'Priced separately and agreed in your written scope.',
     lines: ['User interviews during research', 'A starter style guide, palette and type system for products without one'],
   };
-  const waLink = 'https://wa.me/27731602194?text=' + encodeURIComponent("Hi Tawanda, I'd like to talk about the Vanta Five for a project.");
+  const waLink = 'https://wa.me/27731602194?text=' + encodeURIComponent("Hi Tawanda, I'd like to talk about the Product Blueprint for a project.");
   const tick = (featured) => (
     <span className="offer-tick" style={{ color: featured ? 'var(--accent-ink)' : 'var(--fg-2)' }}>
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -241,15 +241,15 @@ function Offers({ accent }) {
         </div>
         <div className="offers-grid offers-grid--two">
           <Reveal>
-            <article className="offer offer--featured" style={{ ['--accent']: accent }} aria-labelledby="offer-vanta-five">
+            <article className="offer offer--featured" style={{ ['--accent']: accent }} aria-labelledby="offer-product-blueprint">
               <div className="offer-flag mono">Fixed scope</div>
               <div className="offer-head">
-                <h3 className="offer-t" id="offer-vanta-five">{pkg.t}</h3>
+                <h3 className="offer-t" id="offer-product-blueprint">{pkg.t}</h3>
               </div>
               <p className="offer-price">{pkg.price}<span className="mono dim">per project</span></p>
               <p className="offer-d">{pkg.d}</p>
               <ul className="offer-list">{pkg.lines.map((l) => <li key={l}>{tick(true)}{l}</li>)}</ul>
-              <a href={waLink} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp about the Vanta Five" className="offer-cta offer-cta--accent">
+              <a href={waLink} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp about the Product Blueprint" className="offer-cta offer-cta--accent">
                 Talk about your project
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                   <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -284,7 +284,7 @@ function FAQ() {
     ['Does AI replace the design thinking?', 'No. AI speeds up the work. Every direction, decision and final screen is reviewed and designed by us.'],
     ['Do you build the product too?', 'No. We focus on design and hand over a build-ready Figma file, prototype and annotations. Your developers build it.'],
     ['Can you work under our brand?', 'Yes. White-label work is welcome. We agree on communication and handover before we start.'],
-    ['How much does it cost?', 'The Vanta Five starts at R60 000 per project. We agree on the scope, price and timing before work starts.'],
+    ['How much does it cost?', 'The Product Blueprint starts at R60 000 per project. We agree on the scope, price and timing before work starts.'],
     ['What if we don’t have a style guide?', 'We can create a starter style guide as an add-on, with a palette and type system for your product.'],
   ];
   return <section id="faq" className="section"><div className="container faq-layout"><div><Eyebrow>Good questions</Eyebrow><h2 className="h2">Before you<br />get started.</h2></div><div>{questions.map(([q,a]) => <details className="faq-item" key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></div></section>;
@@ -461,7 +461,7 @@ function Footer({ accent }) {
             </div>
             <div>
               <div className="mono dim foot-h">Engage</div>
-              <a href="#offers">The Vanta Five</a>
+              <a href="#offers">The Product Blueprint</a>
               <a href="#contact">Talk to Tawanda</a>
             </div>
             <div>

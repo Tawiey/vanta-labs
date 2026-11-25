@@ -6,7 +6,7 @@ Context for AI agents working on this repository. Read this first.
 
 ## Current homepage direction (25 November 2026)
 
-The site is now design only, for dev houses and product teams. The small business website packages and the Businesses / Agencies switch are removed. The homepage sells the Vanta Five, a five-step design process (Discovery, Research, Wireframes and flows, Prototype, Final design and handover), from R60 000 per project, with user interviews and a starter style guide as add-ons. The differentiator is speed through AI and automation: the headline promise is a clickable prototype in one week. Do not add a total project duration or other speed figures unless Tawanda confirms them. Copy avoids em dashes. The October direction below is historical.
+The site is now design only, for dev houses and product teams. The small business website packages and the Businesses / Agencies switch are removed. The homepage sells the Product Blueprint, a five-step design process (Discovery, Research, Wireframes and flows, Prototype, Final design and handover), from R60 000 per project, with user interviews and a starter style guide as add-ons. The differentiator is speed through AI and automation: the headline promise is a clickable prototype in one week. Do not add a total project duration or other speed figures unless Tawanda confirms them. Copy avoids em dashes. The October direction below is historical.
 
 ## Previous homepage direction (27 October 2026)
 
