@@ -13,7 +13,7 @@ function ProjectPreview({project, priority = false}) {
 }
 
 // The transform follows scroll directly, with no timer or independent animation.
-function WebsiteReveal({ audience }) {
+function WebsiteReveal() {
   const stageRef = React.useRef(null);
   React.useEffect(() => {
     const stage = stageRef.current;
@@ -45,7 +45,7 @@ function WebsiteReveal({ audience }) {
       window.removeEventListener('resize', requestUpdate);
       motion.removeEventListener('change', requestUpdate);
     };
-  }, [audience]);
+  }, []);
   return <div className="website-reveal container" ref={stageRef}>
     <div className="website-reveal-glow" aria-hidden="true" />
     <div className="website-reveal-device" role="img" aria-label="Aucor Property website on a desktop screen">
@@ -57,9 +57,8 @@ function WebsiteReveal({ audience }) {
 
 function Work() {
   return <section id="work" className="section"><div className="container">
-    <div className="section-head section-head--row"><div><Eyebrow>Recent work</Eyebrow><h2 className="h2">Different businesses.<br />Built around their needs.</h2></div><p className="section-sub">A few websites we’ve worked on recently. Your website will be shaped around your business, your customers and your goals.</p></div>
+    <div className="section-head section-head--row"><div><Eyebrow>Recent work</Eyebrow><h2 className="h2">Different products.<br />Designed around their users.</h2></div><p className="section-sub">A few projects we’ve designed recently, from public websites to research platforms.</p></div>
     <div className="recent-projects">{WEBSITE_PROJECTS.map(project => <article className="recent-project" key={project.slug}><ProjectPreview project={project}/><div className="project-copy"><span className="mono dim">{project.type}</span><h3>{project.name}</h3><p>{project.description}</p></div></article>)}</div>
-    <p className="work-scope-note dim">These examples show our work. Each website package has its own agreed scope. Features such as auction listings or an interactive globe are priced separately.</p>
-  </div></section>;
+      </div></section>;
 }
 Object.assign(window, {WEBSITE_PROJECTS, ProjectPreview, WebsiteReveal, Work});

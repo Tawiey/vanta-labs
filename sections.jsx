@@ -103,7 +103,7 @@ function Eyebrow({ children, num }) {
 // ─────────────────────────────────────────────────────────────────────────
 // NAV
 // ─────────────────────────────────────────────────────────────────────────
-function Nav({ accent, theme, onToggleTheme, audience }) {
+function Nav({ accent, theme, onToggleTheme }) {
   const [scrolled, setScrolled] = useState(false);
   const dark = theme !== 'light';
   useEffect(() => {
@@ -122,7 +122,7 @@ function Nav({ accent, theme, onToggleTheme, audience }) {
           <a href="#work">Work</a>
           <a href="#services">Services</a>
           <a href="#process">Process</a>
-          <a href="#offers">{audience === 'agencies' ? 'Work with us' : 'Website packages'}</a>
+          <a href="#offers">Pricing</a>
           <a href="#faq">FAQs</a>
         </nav>
         <button onClick={onToggleTheme} aria-label="Toggle theme" style={{
@@ -156,154 +156,119 @@ function Nav({ accent, theme, onToggleTheme, audience }) {
 // HERO — text-led opening and scroll-linked website reveal
 // ─────────────────────────────────────────────────────────────────────────
 
-function Hero({ accent, audience, onAudienceChange }) {
-  const agency = audience === 'agencies';
+function Hero({ accent }) {
   return <section id="top" className="hero">
-    <div className="container audience-row">
-      <div className="audience-switch" role="group" aria-label="Who is the website for?">
-        <button type="button" aria-pressed={!agency} onClick={() => onAudienceChange('businesses')}>For businesses</button>
-        <button type="button" aria-pressed={agency} onClick={() => onAudienceChange('agencies')}>For agencies</button>
-      </div>
-
-    </div>
     <div className="hero-inner">
       <div className="hero-text">
-        <Eyebrow>{agency ? 'White-label website design & build' : 'Website design & build · South Africa'}</Eyebrow>
-        <h1 className="display">{agency ? <>Your next website project.<br /><span className="hero-value">An extra pair of hands.</span></> : <>A website that makes your business <span className="hero-value">look the part.</span></>}</h1>
-        <p className="lede">{agency ? 'We design and build websites for your clients, under your brand. You lead the client relationship. We help you get the work done.' : 'Help customers see what you do, trust your business and get in touch. We write the words, design your website and get it online.'}</p>
+        <Eyebrow>Product design for development teams</Eyebrow>
+        <h1 className="display">A clickable prototype <span className="hero-value">in one week.</span></h1>
+        <p className="lede">We design digital products for dev houses and product teams. An AI-powered workflow gets your developers a lifelike prototype in days, not months, so questions are answered before anyone writes production code.</p>
         <div className="hero-cta">
-          <a href={agency ? '#contact' : '#offers'} className="btn btn--accent btn--lg">{agency ? 'Talk about a project' : 'See website packages'}</a>
-          <a href="#work" className="btn btn--ghost btn--lg">See our work</a>
+          <a href="#contact" className="btn btn--accent btn--lg">Book a discovery call</a>
+          <a href="#process" className="btn btn--ghost btn--lg">See the Vanta Five</a>
         </div>
-        <p className="hero-promise">{agency ? 'Design, build or both. Scope and price agreed before work starts.' : <>One-page websites from R4 500. Four-page Business website: <strong style={{whiteSpace: 'nowrap'}}>R8 500.</strong></>}</p>
+        <p className="hero-promise">Design only, done properly. The Vanta Five from <strong style={{whiteSpace: 'nowrap'}}>R60 000.</strong></p>
       </div>
 
     </div>
-    <WebsiteReveal audience={audience} />
+    <WebsiteReveal />
   </section>;
 }
 
-function Services({ audience }) {
-  const agency = audience === 'agencies';
-  const items = agency ? [
-    ['Design help', 'Turn your client’s brief into a clear, polished website design.'],
-    ['Website builds', 'Bring an approved design to life, on desktop and phone.'],
-    ['Content your client can edit', 'Add a content management system when the project needs it.'],
-    ['Work under your brand', 'Agree on the scope, review points and handover with your team.'],
-  ] : [
-    ['Tell your story clearly', 'We write the words from your answers. No blank page to face.'],
-    ['Give customers confidence', 'Show your services, your work and the reviews you already have.'],
-    ['Make it easy to get in touch', 'Clear call and WhatsApp links help customers take the next step.'],
-    ['Get the setup sorted', 'Your domain, hosting and business email, together in one package.'],
+function Services() {
+  const items = [
+    ['Speed without shortcuts', 'AI handles the repetitive work: research scans, layout options, prototype builds. Our time goes into the decisions that matter.'],
+    ['A prototype your devs can use', 'A lifelike, clickable prototype that covers every scenario, ready to share with your developers in week one.'],
+    ['Fewer surprises in the build', 'Questions get answered in the prototype, not halfway through a sprint. Less rework, faster builds.'],
+    ['Design only, under your brand', 'We focus on the design so your team can focus on building. White-label work welcome.'],
   ];
   return <section id="services" className="section"><div className="container">
-    <div className="section-head section-head--row"><div><Eyebrow>How we help</Eyebrow><h2 className="h2">{agency ? <>More capacity.<br />Less to juggle.</> : <>You run your business.<br />We’ll handle the website.</>}</h2></div><p className="section-sub">{agency ? 'Bring us in for the part you need help with. You’ll work directly with Tawanda.' : 'You don’t need to know how websites work. Tell us about your business. We’ll take it from there.'}</p></div>
+    <div className="section-head section-head--row"><div><Eyebrow>Why work with us</Eyebrow><h2 className="h2">Faster design.<br />Clearer builds.</h2></div><p className="section-sub">Every project runs through the same five steps, sped up with AI and automation at each one. You work directly with Tawanda.</p></div>
     <div className="svc-grid">{items.map(([title, body], i) => <article className="svc" key={title}><div className="mono dim">0{i+1}</div><h3 className="svc-t">{title}</h3><p className="svc-d">{body}</p></article>)}</div>
   </div></section>;
 }
 
-function Process({ audience }) {
-  const agency = audience === 'agencies';
-  const steps = agency ? [
-    ['Share the brief', 'Tell us what your client needs, what’s ready and where you need help.'],
-    ['Agree on the work', 'We set the scope, price, review points and timeline together.'],
-    ['Review with your team', 'We design and build the agreed work. You guide the client feedback.'],
-    ['Hand over', 'We check the site and hand over the agreed files, access and next steps.'],
-  ] : [
-    ['Tell us about your business', 'Answer a short intake about your services, customers and goals. Send your logo, photos and any reviews you want to use.'],
-    ['Book your project', 'Agree on your pages and scope, then pay a 50% deposit. We write the copy from your answers.'],
-    ['See your first version', 'For the Business package, your first version is ready within five business days of your cleared deposit. Give us your feedback in two revision rounds.'],
-    ['Go live', 'Once you approve the website, pay the balance before launch. We connect your domain and get your site online.'],
+function Process() {
+  const steps = [
+    ['Discovery', 'A kickoff on what you are building, why now, the business goal and what success looks like.', 'A one-page brief you sign off.'],
+    ['Research', 'A competitor scan, gap analysis and review of your metrics, sped up with AI research tools.', '3 to 5 focus areas for the solution.'],
+    ['Wireframes and flows', 'Many lo-fi ideas explored and critiqued quickly, plus the key user flows.', '2 to 3 directions. You pick one.'],
+    ['Prototype', 'An AI-built, lifelike prototype your team and developers can click through end to end.', 'A working prototype in week one.'],
+    ['Final design and handover', 'Up to three rounds of iteration, the final Figma design and annotated screens.', 'A build-ready handover pack.'],
   ];
   return <section id="process" className="section"><div className="container">
-    <div className="section-head"><Eyebrow>How it works</Eyebrow><h2 className="h2">{agency ? 'A clear plan from brief to handover.' : 'A few simple steps to your new website.'}</h2></div>
-    <ol className="simple-process">{steps.map(([title,body], i) => <li key={title}><span className="mono dim">0{i+1}</span><h3>{title}</h3><p>{body}</p></li>)}</ol>
+    <div className="section-head"><Eyebrow>The Vanta Five</Eyebrow><h2 className="h2">Five steps from brief to build-ready.</h2></div>
+    <ol className="simple-process simple-process--five">{steps.map(([title, body, out], i) => <li key={title}><span className="mono dim">0{i+1}</span><h3>{title}</h3><p>{body}</p><p className="process-out"><strong>You get:</strong> {out}</p></li>)}</ol>
   </div></section>;
 }
 
-function Offers({ accent, audience }) {
-  if (audience === 'agencies') return <section id="offers" className="section"><div className="container agency-offer">
-    <Eyebrow>For agencies</Eyebrow><h2 className="h2">Your brief.<br />A price for the work.</h2>
-    <p className="lede">Need a designer, a developer or someone to handle both? Send us the brief. We’ll agree on the work and cost before we start.</p>
-    <a className="btn btn--accent btn--lg" href="https://wa.me/27731602194?text=Hi%20Tawanda%2C%20I%27d%20like%20to%20discuss%20a%20white-label%20website%20project." target="_blank" rel="noopener noreferrer">Discuss white-label work ↗</a>
-  </div></section>;
-
-  const offers = [
-    {
-      t: 'Start',
-      price: 'R4 500',
-      d: 'A focused page to introduce yourself, your work or your business.',
-      lines: ['One page, up to six sections', 'Copy written from your answers', 'One business email account', 'WhatsApp and call links'],
-      featured: false,
-    },
-    {
-      t: 'Business',
-      price: 'R8 500',
-      d: 'A clear home for your services, your story and your next enquiry.',
-      lines: ['Four agreed pages', 'Copy written from your answers', 'Three business email accounts', 'WhatsApp, call links and an enquiry form', 'Two rounds of changes'],
-      featured: true,
-    },
-    {
-      t: 'Grow',
-      price: 'R19 000',
-      d: 'A website with content you can keep up to date yourself.',
-      lines: ['Up to six pages', 'Copy written from your answers', 'Three business email accounts', 'Edit two agreed types of content yourself', 'Up to ten content entries added for you', 'A handover session'],
-      featured: false,
-    },
-  ];
+function Offers({ accent }) {
+  const pkg = {
+    t: 'The Vanta Five',
+    price: 'From R60 000',
+    d: 'One fixed scope and price for a new product, feature or redesign.',
+    lines: ['Discovery brief and research focus areas', 'Wireframes, user flows and an agreed direction', 'A clickable prototype in one week', 'Up to three rounds of design iteration', 'Final Figma design with annotations', 'A handover pack for your developers'],
+  };
+  const addons = {
+    t: 'Add-ons',
+    d: 'Priced separately and agreed in your written scope.',
+    lines: ['User interviews during research', 'A starter style guide, palette and type system for products without one'],
+  };
+  const waLink = 'https://wa.me/27731602194?text=' + encodeURIComponent("Hi Tawanda, I'd like to talk about the Vanta Five for a project.");
+  const tick = (featured) => (
+    <span className="offer-tick" style={{ color: featured ? 'var(--accent-ink)' : 'var(--fg-2)' }}>
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path d="M2.5 6.5L5 9L9.5 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </span>
+  );
   return (
     <section id="offers" className="section section--offers">
       <div className="container">
         <div className="section-head section-head--row">
           <div>
-            <Eyebrow>Website packages</Eyebrow>
+            <Eyebrow>Pricing</Eyebrow>
             <Reveal>
-              <h2 className="h2">Your business, online.<br />One clear price.</h2>
+              <h2 className="h2">One process.<br />One clear price.</h2>
             </Reveal>
           </div>
           <Reveal delay={120}>
             <p className="section-sub">
-              Choose the website that fits what you need today. We write the copy
-              from your answers, design it and build it for you.
+              The scope, price and review points are agreed before work starts,
+              and every step ends with a deliverable you sign off.
             </p>
           </Reveal>
         </div>
-        <div className="offers-grid">
-          {offers.map((o, i) => (
-            <Reveal key={o.t} delay={i * 80}>
-              <article className={'offer ' + (o.featured ? 'offer--featured' : '')} style={{ ['--accent']: accent }} aria-labelledby={'offer-' + o.t.toLowerCase()}>
-                {o.featured && <div className="offer-flag mono">Recommended</div>}
-                <div className="offer-head">
-                  <h3 className="offer-t" id={'offer-' + o.t.toLowerCase()}>{o.t}</h3>
-                </div>
-                <p className="offer-price">{o.price}<span className="mono dim">once-off</span></p>
-                <p className="offer-d">{o.d}</p>
-                <ul className="offer-list">
-                  {o.lines.map((l) => (
-                    <li key={l}>
-                      <span className="offer-tick" style={{ color: o.featured ? 'var(--accent-ink)' : 'var(--fg-2)' }}>
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                          <path d="M2.5 6.5L5 9L9.5 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </span>
-                      {l}
-                    </li>
-                  ))}
-                </ul>
-                <a href={'https://wa.me/27731602194?text=' + encodeURIComponent("Hi Tawanda, I'm interested in the " + o.t + ' website package (' + o.price + ').')} target="_blank" rel="noopener noreferrer" aria-label={'Chat on WhatsApp about the ' + o.t + ' website package'} className={'offer-cta ' + (o.featured ? 'offer-cta--accent' : '')}>
-                  Chat about {o.t}
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </a>
-              </article>
-            </Reveal>
-          ))}
+        <div className="offers-grid offers-grid--two">
+          <Reveal>
+            <article className="offer offer--featured" style={{ ['--accent']: accent }} aria-labelledby="offer-vanta-five">
+              <div className="offer-flag mono">Fixed scope</div>
+              <div className="offer-head">
+                <h3 className="offer-t" id="offer-vanta-five">{pkg.t}</h3>
+              </div>
+              <p className="offer-price">{pkg.price}<span className="mono dim">per project</span></p>
+              <p className="offer-d">{pkg.d}</p>
+              <ul className="offer-list">{pkg.lines.map((l) => <li key={l}>{tick(true)}{l}</li>)}</ul>
+              <a href={waLink} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp about the Vanta Five" className="offer-cta offer-cta--accent">
+                Talk about your project
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
+            </article>
+          </Reveal>
+          <Reveal delay={80}>
+            <article className="offer" aria-labelledby="offer-addons">
+              <div className="offer-head">
+                <h3 className="offer-t" id="offer-addons">{addons.t}</h3>
+              </div>
+              <p className="offer-d">{addons.d}</p>
+              <ul className="offer-list">{addons.lines.map((l) => <li key={l}>{tick(false)}{l}</li>)}</ul>
+            </article>
+          </Reveal>
         </div>
         <div className="offers-details">
-          <p>All packages include mobile-friendly layouts, first-year hosting and domain registration up to R300. Renewal fees apply after year one. Prices are the total initial package cost; no VAT is added.</p>
-          <p><strong>Business: a first version in five business days after your deposit.</strong> Complete the intake before paying the 50% deposit. Review your first version, then use your two rounds of changes. The balance is payable before launch.</p>
-          <p>Online shops, booking systems, quoting and invoicing setup, and custom integrations are scoped separately. Any content system or platform licence fees are listed in your written scope.</p>
+          <p>Design only. We hand over a build-ready Figma file and prototype; your team builds the product. Prices exclude any third-party tool or licence fees, which are listed in your written scope.</p>
         </div>
       </div>
     </section>
@@ -313,19 +278,14 @@ function Offers({ accent, audience }) {
 // ─────────────────────────────────────────────────────────────────────────
 // THINKING (insights/blog)
 // ─────────────────────────────────────────────────────────────────────────
-function FAQ({ audience }) {
-  const agency = audience === 'agencies';
-  const questions = agency ? [
-    ['Can you work under our brand?', 'Yes. White-label work is the main agency service. We agree on communication and handover before we start.'],
-    ['Can you build a design we already have?', 'Yes. Share the design and brief so we can check the work and give you a price.'],
-    ['How much does it cost?', 'Agency projects are priced to the brief. We agree on the scope, price and timing before work starts.'],
-  ] : [
-    ['Do I need to write the website copy?', 'No. We write it from your intake answers. You check it for accuracy before launch.'],
-    ['What is included in R8 500?', 'Four agreed pages, copywriting, three business email accounts, mobile-friendly design, WhatsApp and call links, an enquiry form and two revision rounds. First-year hosting and domain registration up to R300 are included. No VAT is added.'],
-    ['Will my website be live in five days?', 'The Business package’s first version is ready within five business days of your cleared deposit. Complete your intake before paying. Launch follows your feedback, approval and final payment.'],
-    ['What happens after the first year?', 'Hosting, email and domain renewal fees apply after the included year. We confirm these costs with you before you commit to the project.'],
-    ['Can I change the pages?', 'Yes. Agree on the four pages you need before work starts. Home, About, Services and Contact are a useful starting point.'],
-    ['What if I need a shop or booking system?', 'We price online shops, booking systems, quoting and invoicing setup separately. Tell us what you need and we’ll include it in your written scope.'],
+function FAQ() {
+  const questions = [
+    ['How can you get a prototype ready in a week?', 'AI and automation take care of the repetitive work in research, layout exploration and prototype building. That frees our time for the design decisions, and you see a working prototype in week one.'],
+    ['Does AI replace the design thinking?', 'No. AI speeds up the work. Every direction, decision and final screen is reviewed and designed by us.'],
+    ['Do you build the product too?', 'No. We focus on design and hand over a build-ready Figma file, prototype and annotations. Your developers build it.'],
+    ['Can you work under our brand?', 'Yes. White-label work is welcome. We agree on communication and handover before we start.'],
+    ['How much does it cost?', 'The Vanta Five starts at R60 000 per project. We agree on the scope, price and timing before work starts.'],
+    ['What if we don’t have a style guide?', 'We can create a starter style guide as an add-on, with a palette and type system for your product.'],
   ];
   return <section id="faq" className="section"><div className="container faq-layout"><div><Eyebrow>Good questions</Eyebrow><h2 className="h2">Before you<br />get started.</h2></div><div>{questions.map(([q,a]) => <details className="faq-item" key={q}><summary>{q}</summary><p>{a}</p></details>)}</div></div></section>;
 }
@@ -367,7 +327,7 @@ function CallbackForm({ accent }) {
           <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="var(--on-accent)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </span>
         <div>
-          <div className="cb-done-h">Got it — we'll call you back.</div>
+          <div className="cb-done-h">Got it. We'll call you back.</div>
           <p className="cb-done-p">Expect a call within one business day. In a hurry? Book a slot above, or email hello@vantastudio.design.</p>
         </div>
       </div>
@@ -400,7 +360,7 @@ function CallbackForm({ accent }) {
           value={values.phone} onChange={onChange} placeholder="+27 …" />
       </label>
       <label className="cb-field">
-        <span className="cb-label">What does your business need? <span className="cb-opt">optional</span></span>
+        <span className="cb-label">What are you building? <span className="cb-opt">optional</span></span>
         <textarea name="note" rows="2"
           value={values.note} onChange={onChange} placeholder="A sentence is plenty." />
       </label>
@@ -412,7 +372,7 @@ function CallbackForm({ accent }) {
           <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M3 9L9 3M9 3H4M9 3V8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></svg>
         )}
       </button>
-      <p className="cb-consent">We'll only use your number to call you back about your project — never shared, POPIA-friendly.</p>
+      <p className="cb-consent">We'll only use your number to call you back about your project. Never shared, POPIA-friendly.</p>
     </form>
   );
 }
@@ -427,7 +387,7 @@ function openBookingFallback() {
   }
 }
 
-function CTA({ accent, audience }) {
+function CTA({ accent }) {
   return (
     <section id="contact" className="section section--cta">
       <div className="container">
@@ -439,12 +399,12 @@ function CTA({ accent, audience }) {
             </Reveal>
             <Reveal delay={80}>
               <h2 className="cta-h">
-                {audience === 'agencies' ? 'Let’s talk about your next client project.' : 'Ready for a website you’re proud to share?'}
+                Have a product to design? Let’s see it in a week.
               </h2>
             </Reveal>
             <Reveal delay={180}>
               <p className="cta-sub">
-                Talk to Tawanda about what you need. We’ll help you find the right next step.
+                Tell Tawanda what you are building. We’ll agree on the scope and get your prototype moving.
               </p>
             </Reveal>
             <div className="cta-paths">
@@ -484,7 +444,7 @@ function CTA({ accent, audience }) {
 // ─────────────────────────────────────────────────────────────────────────
 // FOOTER
 // ─────────────────────────────────────────────────────────────────────────
-function Footer({ accent, audience }) {
+function Footer({ accent }) {
   return (
     <footer className="footer">
       <div className="container">
@@ -501,7 +461,7 @@ function Footer({ accent, audience }) {
             </div>
             <div>
               <div className="mono dim foot-h">Engage</div>
-              <a href="#offers">{audience === 'agencies' ? 'White-label websites' : 'Website packages'}</a>
+              <a href="#offers">The Vanta Five</a>
               <a href="#contact">Talk to Tawanda</a>
             </div>
             <div>
