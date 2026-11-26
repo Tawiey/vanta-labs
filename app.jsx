@@ -7,7 +7,6 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 }/*EDITMODE-END*/;
 
 function App() {
-  const [audience, setAudience] = React.useState('businesses');
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
 
   React.useEffect(() => {
@@ -20,18 +19,18 @@ function App() {
 
   return (
     <>
-      <Nav audience={audience} accent={t.accent} theme={t.theme} onToggleTheme={() => setTweak('theme', t.theme === 'dark' ? 'light' : 'dark')} />
+      <Nav accent={t.accent} theme={t.theme} onToggleTheme={() => setTweak('theme', t.theme === 'dark' ? 'light' : 'dark')} />
       <main>
-        <Hero accent={t.accent} audience={audience} onAudienceChange={setAudience} />
-        <Services audience={audience} accent={t.accent} />
+        <Hero accent={t.accent} />
+        <Services accent={t.accent} />
         <Work accent={t.accent} />
         <Testimonials accent={t.accent} layout={t.testimonialsLayout} />
-        <Process audience={audience} accent={t.accent} />
-        <Offers audience={audience} accent={t.accent} />
-        <FAQ audience={audience} />
-        <CTA audience={audience} accent={t.accent} />
+        <Process accent={t.accent} />
+        <Offers accent={t.accent} />
+        <FAQ />
+        <CTA accent={t.accent} />
       </main>
-      <Footer audience={audience} accent={t.accent} />
+      <Footer accent={t.accent} />
 
       <TweaksPanel title="Vanta · Tweaks">
         <TweakSection label="Theme" />

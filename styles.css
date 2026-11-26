@@ -1986,3 +1986,24 @@ button { font: inherit; }
   .website-reveal-device { transform:none; }
   .hero .audience-switch button { transition:none; }
 }
+
+/* Vanta Five process + single-package pricing (Nov 2026) */
+.simple-process--five { grid-template-columns:repeat(5,minmax(0,1fr)); gap:24px; }
+.simple-process--five h3 { font-size:20px; }
+.simple-process .process-out { margin-top:14px; font-size:14px; color:var(--fg-3); }
+.simple-process .process-out strong { color:var(--fg); font-weight:500; }
+.offers-grid--two { grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); align-items:start; }
+@media (max-width: 1100px) { .simple-process--five { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media (max-width: 900px) { .offers-grid--two { grid-template-columns:1fr; } }
+@media (max-width: 760px) { .simple-process--five { grid-template-columns:1fr; } }
+
+/* App project card (TrailBrew) */
+.project-preview--app { padding:22px 0 32px; display:flex; justify-content:center; }
+.project-app-phone { width:min(46%, 240px); }
+.project-app-phone img { width:100%; height:auto; display:block; filter:drop-shadow(0 16px 32px rgba(0,0,0,.4)); }
+.project-app-phone--empty { aspect-ratio:9/19.5; border:5px solid #25282d; border-radius:24px; }
+.project-app-phone--empty { display:grid; place-items:center; text-align:center; border-style:dashed; border-color:var(--line-2); background:var(--bg-2); }
+.project-app-phone--empty span { font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--fg-3); padding:0 12px; line-height:1.6; }
+.project-link { display:inline-block; margin-top:12px; font-size:14px; color:var(--fg); border-bottom:1px solid var(--line-2); text-decoration:none; }
+.project-link:hover { border-color:var(--accent); }
+@media (min-width: 981px) { .recent-projects { grid-template-columns:repeat(2,minmax(0,1fr)); } }

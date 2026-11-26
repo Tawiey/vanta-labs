@@ -3,9 +3,21 @@ const WEBSITE_PROJECTS = [
   {slug:'aucor-property', name:'Aucor Property', type:'Property auctions', description:'A clear introduction to the business, with the next auction and registration action easy to find.'},
   {slug:'cm-plumbing', name:'CM Plumbing & Renovations', type:'Plumbing & renovations', description:'Services, experience and a clear way to ask for a quote. Built to make calling or sending a WhatsApp message easy.'},
   {slug:'scis-wits', name:'SCIS at Wits', type:'Research & education', description:'A home for research, news and ideas, with clear paths to explore the centre’s work.'},
+  {slug:'trailbrew', name:'TrailBrew', type:'iOS app · In-house product', description:'A mountain biking app for service tracking, suspension setup and trail discovery, designed and built with an AI workflow and shaped by beta riders.', app:true, href:'cases/TrailBrew.html'},
 ];
 
+// App projects show a single phone; a missing screenshot shows a labelled empty frame.
+function AppPreview({project}) {
+  const [missing, setMissing] = React.useState(false);
+  return <div className="project-preview project-preview--app" role="img" aria-label={project.name + ' app shown on a phone'}>
+    <div className={'project-app-phone' + (missing ? ' project-app-phone--empty' : '')}>
+      {missing ? <span>App screens coming soon</span> : <img src={'assets/work/trailbrew/garage.webp'} alt="" loading="lazy" onError={() => setMissing(true)} />}
+    </div>
+  </div>;
+}
+
 function ProjectPreview({project, priority = false}) {
+  if (project.app) return <AppPreview project={project} />;
   return <div className="project-preview" role="img" aria-label={project.name + ' website shown on desktop and mobile'}>
     <div className="project-desktop"><div className="project-browser-bar" aria-hidden="true"><i/><i/><i/></div><img src={'assets/work/recent/'+project.slug+'-desktop.webp'} alt="" loading={priority ? 'eager' : 'lazy'} fetchPriority={priority ? 'high' : 'auto'} /></div>
     <div className="project-mobile"><img src={'assets/work/recent/'+project.slug+'-mobile.webp'} alt="" loading={priority ? 'eager' : 'lazy'} /></div>
@@ -13,7 +25,7 @@ function ProjectPreview({project, priority = false}) {
 }
 
 // The transform follows scroll directly, with no timer or independent animation.
-function WebsiteReveal({ audience }) {
+function WebsiteReveal() {
   const stageRef = React.useRef(null);
   React.useEffect(() => {
     const stage = stageRef.current;
@@ -45,7 +57,7 @@ function WebsiteReveal({ audience }) {
       window.removeEventListener('resize', requestUpdate);
       motion.removeEventListener('change', requestUpdate);
     };
-  }, [audience]);
+  }, []);
   return <div className="website-reveal container" ref={stageRef}>
     <div className="website-reveal-glow" aria-hidden="true" />
     <div className="website-reveal-device" role="img" aria-label="Aucor Property website on a desktop screen">
@@ -57,9 +69,8 @@ function WebsiteReveal({ audience }) {
 
 function Work() {
   return <section id="work" className="section"><div className="container">
-    <div className="section-head section-head--row"><div><Eyebrow>Recent work</Eyebrow><h2 className="h2">Different businesses.<br />Built around their needs.</h2></div><p className="section-sub">A few websites we’ve worked on recently. Your website will be shaped around your business, your customers and your goals.</p></div>
-    <div className="recent-projects">{WEBSITE_PROJECTS.map(project => <article className="recent-project" key={project.slug}><ProjectPreview project={project}/><div className="project-copy"><span className="mono dim">{project.type}</span><h3>{project.name}</h3><p>{project.description}</p></div></article>)}</div>
-    <p className="work-scope-note dim">These examples show our work. Each website package has its own agreed scope. Features such as auction listings or an interactive globe are priced separately.</p>
-  </div></section>;
+    <div className="section-head section-head--row"><div><Eyebrow>Recent work</Eyebrow><h2 className="h2">Different products.<br />Designed around their users.</h2></div><p className="section-sub">A few projects we’ve designed recently, from public websites to research platforms.</p></div>
+    <div className="recent-projects">{WEBSITE_PROJECTS.map(project => <article className="recent-project" key={project.slug}><ProjectPreview project={project}/><div className="project-copy"><span className="mono dim">{project.type}</span><h3>{project.name}</h3><p>{project.description}</p>{project.href && <a className="project-link" href={project.href}>Read the case study ↗</a>}</div></article>)}</div>
+      </div></section>;
 }
-Object.assign(window, {WEBSITE_PROJECTS, ProjectPreview, WebsiteReveal, Work});
+Object.assign(window, {WEBSITE_PROJECTS, AppPreview, ProjectPreview, WebsiteReveal, Work});
