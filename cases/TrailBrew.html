@@ -11,13 +11,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../styles.css?v=10" />
+  <link rel="stylesheet" href="../styles.css?v=11" />
   <link rel="stylesheet" href="case-study.css" />
   <style>
     :root { --accent: #ff8a3d; --accent-ink: #ff8a3d; }
     [data-theme="light"] { --accent-ink: #b4501a; }
     [data-theme="dark"] .cs-stat-v { color: var(--accent); }
-    .tb-phones { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin: 32px 0 48px; }
+    .tb-phones { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; margin: 32px 0 48px; }
+    .tb-shot { display: block; width: 100%; height: auto; filter: drop-shadow(0 16px 32px rgba(0,0,0,.45)); }
     .tb-phone { display: flex; flex-direction: column; gap: 12px; }
     .tb-phone-frame { aspect-ratio: 9 / 19.5; border-radius: 28px; border: 6px solid #25282d; background: #17191c; overflow: hidden; box-shadow: 0 16px 40px #0004; }
     .tb-phone-frame img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
@@ -26,8 +27,9 @@
     .tb-phone-cap { font-size: 13px; color: var(--fg-2); line-height: 1.4; }
     .tb-phone-cap strong { display: block; color: var(--fg); font-weight: 500; margin-bottom: 2px; }
     .cs-hero-art.tb-hero-art { aspect-ratio: auto; display: grid; place-items: center; padding: 40px 24px; background: radial-gradient(60% 50% at 50% 40%, rgba(255,138,61,.14), transparent 70%), var(--bg-2); }
-    .tb-hero-phone { width: min(260px, 70%); }
-    @media (max-width: 900px) { .tb-phones { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    .tb-hero-phone { width: min(280px, 72%); }
+    @media (max-width: 1000px) { .tb-phones { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (max-width: 640px) { .tb-phones { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   </style>
 </head>
 <body>
@@ -45,10 +47,11 @@
     // Screens captured from the iOS simulator. A missing file shows a labelled
     // empty frame instead of a broken image, so the page never ships fake art.
     const SCREENS = [
-      { file: 'garage', t: 'Your garage', b: 'Each bike, its mileage and when the next service is due.' },
-      { file: 'service', t: 'Service tracker', b: 'Log a service and see what needs attention before a ride.' },
-      { file: 'rides', t: 'Group rides', b: 'Post a ride or find one to join from the community.' },
-      { file: 'trails', t: 'Trail discovery', b: 'Find trails to ride, near home or on a trip.' },
+      { file: 'garage', t: 'Garage', b: 'Kilometres since the last service, suspension settings and tracked components for each bike.' },
+      { file: 'setup', t: 'Ride setup', b: 'Pick the kind of riding and the conditions, and see the saved fork, shock and tyre settings.' },
+      { file: 'ride-sim', t: 'See how it rides', b: 'An animated rider shows how a setup handles terrain like rock gardens, with plain-language advice.' },
+      { file: 'trails', t: 'Trails', b: 'Your last ride, tagged to a trail, with reminders and events in one place.' },
+      { file: 'browse', t: 'Browse trails', b: 'A catalogue of South African trails by province, ride style and difficulty.' },
     ];
 
     function PhoneShot({ file, label }) {
@@ -56,11 +59,7 @@
       if (missing) {
         return <div className="tb-phone-frame tb-phone-frame--empty"><span>{label} screen coming soon</span></div>;
       }
-      return (
-        <div className="tb-phone-frame">
-          <img src={'../assets/work/trailbrew/' + file + '.png'} alt={'TrailBrew ' + label + ' screen'} loading="lazy" onError={() => setMissing(true)} />
-        </div>
-      );
+      return <img className="tb-shot" src={'../assets/work/trailbrew/' + file + '.webp'} alt={'TrailBrew ' + label + ' screen'} loading="lazy" onError={() => setMissing(true)} />;
     }
 
     function Page() {
@@ -101,8 +100,9 @@
                       <p className="lede">
                         TrailBrew started as a mountain biking community that grew out of
                         the Trails with Tawanda channel. The riders kept running into the same
-                        problems: forgetting when their bike was due for a service and finding
-                        people and trails to ride with. So we designed and built an iOS app for them.
+                        problems: losing track of when their bike was due for a service, guessing
+                        at suspension settings and finding new trails to ride. So we designed and
+                        built an iOS app for them.
                       </p>
                     </Reveal>
                     <Reveal delay={220}>
@@ -166,7 +166,7 @@
                 <div className="cs-section-head">
                   <Eyebrow num="02">What we built</Eyebrow>
                   <Reveal>
-                    <h2 className="h2">The bike, the ride and the trail in one app.</h2>
+                    <h2 className="h2">The bike, the setup and the trail in one app.</h2>
                   </Reveal>
                 </div>
                 <Reveal delay={60}>
@@ -205,7 +205,7 @@
                   {[
                     { v: '4', l: 'Versions shipped to beta riders, each shaped by their feedback' },
                     { v: '1', l: 'Designer taking the product from first sketch to working iOS app' },
-                    { v: 'iOS', l: 'Native SwiftUI app in beta on TestFlight' },
+                    { v: '62', l: 'South African trails in the catalogue, sorted by province and difficulty' },
                   ].map((s, i) => (
                     <Reveal key={i} delay={i * 80} className="cs-stat">
                       <div className="cs-stat-v">{s.v}</div>

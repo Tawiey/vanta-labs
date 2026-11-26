@@ -3,7 +3,7 @@ const WEBSITE_PROJECTS = [
   {slug:'aucor-property', name:'Aucor Property', type:'Property auctions', description:'A clear introduction to the business, with the next auction and registration action easy to find.'},
   {slug:'cm-plumbing', name:'CM Plumbing & Renovations', type:'Plumbing & renovations', description:'Services, experience and a clear way to ask for a quote. Built to make calling or sending a WhatsApp message easy.'},
   {slug:'scis-wits', name:'SCIS at Wits', type:'Research & education', description:'A home for research, news and ideas, with clear paths to explore the centre’s work.'},
-  {slug:'trailbrew', name:'TrailBrew', type:'iOS app · In-house product', description:'A mountain biking app for service tracking, group rides and trails, designed and built with an AI workflow and shaped by beta riders.', app:true, href:'cases/TrailBrew.html'},
+  {slug:'trailbrew', name:'TrailBrew', type:'iOS app · In-house product', description:'A mountain biking app for service tracking, suspension setup and trail discovery, designed and built with an AI workflow and shaped by beta riders.', app:true, href:'cases/TrailBrew.html'},
 ];
 
 // App projects show a single phone; a missing screenshot shows a labelled empty frame.
@@ -11,7 +11,7 @@ function AppPreview({project}) {
   const [missing, setMissing] = React.useState(false);
   return <div className="project-preview project-preview--app" role="img" aria-label={project.name + ' app shown on a phone'}>
     <div className={'project-app-phone' + (missing ? ' project-app-phone--empty' : '')}>
-      {missing ? <span>App screens coming soon</span> : <img src={'assets/work/trailbrew/garage.png'} alt="" loading="lazy" onError={() => setMissing(true)} />}
+      {missing ? <span>App screens coming soon</span> : <img src={'assets/work/trailbrew/garage.webp'} alt="" loading="lazy" onError={() => setMissing(true)} />}
     </div>
   </div>;
 }

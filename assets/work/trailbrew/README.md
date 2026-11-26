@@ -1,10 +1,4 @@
 # TrailBrew screenshots
 
-Drop iPhone simulator screenshots here as PNGs (portrait, full screen):
-
-- garage.png   (bike list with next service due; also used on the homepage card and case hero)
-- service.png  (service tracker)
-- rides.png    (group rides)
-- trails.png   (trail discovery)
-
-Until a file exists, its frame shows a labelled "coming soon" slot.
+Simulator screenshots (iPhone, with the device frame and a transparent backdrop) as WebP:
+garage, setup, ride-sim, trails, browse. A missing file shows a labelled empty frame.
